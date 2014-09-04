@@ -149,7 +149,7 @@ def main():
                 print "Please enter only y or n"
                 sys.exit(1)
         
-        file_names = glob.glob('*.vcf')         
+                
         current_path = os.getcwd()
         
         key_file = sys.argv[1]
@@ -157,19 +157,18 @@ def main():
 
         WES_files = [i[3] for i in key_data]
 
-        for index, file_name in enumerate(file_names):                  #parse in series, and write out final final
-                if file_name in WES_files:
-                        headers, data = read_data(file_name)
-                        print file_name, ': Data read into buffer'
-                        qual_gq_filtered_rows = filter_qual(data, input_qual, input_het, input_hom)
-                        print file_name, ': Variants filtered by quality'
-                        snps, indels = filter_snp_indel(qual_gq_filtered_rows)
-                        print file_name, ': Variants split into snps/indels'
-                        write_processed_variants(file_name, snps, indels, headers, current_path, key_data)
-                        print file_name, ': Variants written to file'
-                        print str(round((100*(index + 1)) / len(file_names), 3)) + '% complete\n'
-                else:
-                        continue
+        for index, file_name in enumerate(WES_files):                  #parse in series, and write out final final
+
+                headers, data = read_data(file_name)
+                print file_name, ': Data read into buffer'
+                qual_gq_filtered_rows = filter_qual(data, input_qual, input_het, input_hom)
+                print file_name, ': Variants filtered by quality'
+                snps, indels = filter_snp_indel(qual_gq_filtered_rows)
+                print file_name, ': Variants split into snps/indels'
+                write_processed_variants(file_name, snps, indels, headers, current_path, key_data)
+                print file_name, ': Variants written to file'
+                print str(round((100*(index + 1)) / len(file_names), 3)) + '% complete\n'
+       
 
 
 if __name__ == "__main__":
