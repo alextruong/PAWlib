@@ -124,6 +124,8 @@ def bcfmerge(rna, wes, bcfdir):
 
         rnatabix = rna + '.gz'
         westabix = wes + '.gz'
+        
+        bgzipcommand = "bgzip %s; bgzip %s" % (rnatemp, westemp)
 
         tabixcommand = "tabix -p vcf %s; tabix -p vcf %s" % (rnatabix, westabix)
 
