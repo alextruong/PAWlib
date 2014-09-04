@@ -74,9 +74,9 @@ def parse_combinations(data, file_name):
         
         return file_name, monoallelic_variants, other_mismatch, matching_het, matching_hom
         
-def write_to_file(master_file, filename):
+def write_to_file(master_file, family_number):
         
-        file_name = filename.split('_')[0]
+        file_name = family_number
         print 'Writing File...'
         
         with open('%s_RNA_WES_cross_pairwise_matrix_counts.txt' % file_name, 'w') as w:
@@ -177,13 +177,14 @@ def main():
 
         file_names = glob.glob('*_merged.vcf')
 
-
         family_list = set([i.split('_')[0] for i in file_names])
         
         master_file = []
         
         for family_id in family_list:
                 family_files = glob.glob("%s*_merged.vcf" % family_id)
+
+                family_number = family_files[0].split('_')[0]
 
                 for individual in family_files:
                         data, headers = read_data(individual)
@@ -196,8 +197,8 @@ def main():
 
                         master_file.append(new_file)
         
-                        write_to_file(master_file)
-                        master_file = []
+                write_to_file(master_file, family_number)
+                master_file = []
                                 
 if __name__ == "__main__":
         main()
