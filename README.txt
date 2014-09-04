@@ -71,4 +71,4 @@ python sorting.py keyfile.txt
 
 This will let the script make directories for the families and move the files accordingly.
 
-The variant_compare script generates a gene list of monoallelic genes present for proband, sibling, father and mother. These lists can be put into a venn diagram generating tool like venny (http://bioinfogp.cnb.csic.es/tools/venny/) to generate a venn diagram to see the intersection of the two gene lists.
+The variant_compare script generates a gene list of monoallelic genes present for proband, sibling, father and mother. These lists can be put into a venn diagram generating tool to generate a venn diagram to see the intersection of the two gene lists.
