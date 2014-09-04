@@ -103,7 +103,7 @@ def write_processed_variants(file_name, snps, indels, headers, current_path, key
         with open(indel_name, 'w') as x:
                 for line in headers:
                         x.write(line + '\n')
-                                                                                                                                                                                             52,1-8        41%
+
                 for row in indels:
                         for index, column in enumerate(row):
                                 if index != len(row) - 1:
@@ -152,7 +152,7 @@ def main():
         current_path = os.getcwd()
 
 
-                                                                                                                                                                                             154,0-1       81%
+
         key_file = sys.argv[1]
         key_headers, key_data = read_data(key_file)
 
@@ -175,4 +175,3 @@ def main():
 
 if __name__ == "__main__":
         main()
-                                                                                                                                                                                             176,1-8       Bot
