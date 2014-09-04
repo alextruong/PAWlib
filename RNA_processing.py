@@ -52,7 +52,7 @@ def filter_qual(data, input_qual, input_het, input_hom):
         print 'Filtering files by Quality Score and GQ'
 
         return qual_gq_filtered_rows
-                                                                                                                                                                                             1,1           Top
+
 
 def filter_snp_indel(qual_gq_filtered_rows):
         """filter rows into snps, and indels"""
