@@ -138,6 +138,18 @@ def write_to_file(ref_file, query_file, ref_headers, query_headers, query_out_da
                 for line in multiallelic_locations:
                         w.write(str(line) + '\n')
 
+def findvcf():
+
+        print 'Locating vcf-sort installation...'
+
+        find_vcftools_path = commands.getstatusoutput('find ~/ -name vcf-sort -executable -type f -print 2>/dev/null')
+
+        vcfdir = find_vcftools_path[1]
+
+        print 'Done!'
+
+        return vcfdir
+
 
 def findbcf():
 
@@ -152,15 +164,22 @@ def findbcf():
         return bcfdir
 
 
-def bcfmerge(rna, wes, bcfdir):
+def bcfmerge(rna, wes, bcfdir, vcfdir):
         """bgzip and tabix output files from gsearch, and use bcftools to merge matching files"""
 
         bgzipcommand = "bgzip %s; bgzip %s" % (rna, wes)
+
+        rnatemp = rna[0:-4] + '_sorted.vcf'
+        westemp = wes[0:-4] + '_sorted.vcf'
 
         rnatabix = rna + '.gz'
         westabix = wes + '.gz'
 
         tabixcommand = "tabix -p vcf %s; tabix -p vcf %s" % (rnatabix, westabix)
+
+        sortcommand = 'vcf-sort %s > %s; vcf-sort %s > %s' % (rna, rnatemp, wes, westemp)
+        
+        os.system(sortcommand)
 
         #print 'bgzipping gsearch output files...'
         os.system(bgzipcommand)
@@ -171,9 +190,9 @@ def bcfmerge(rna, wes, bcfdir):
         #print 'Done!'
         #print '-----------------------------------------------'
 
-        mergename = rna.split('_')[0] + rna.split('_')[1] + rna.split('_')[2] + '_WES_' + rna.split('_')[3] + rna.split('_')[4][0:-4]+ '_merged'
+        mergename = rna.split('_')[0] + '_' + rna.split('_')[1] + '_' + rna.split('_')[2] + '_WES_' + rna.split('_')[3] + '_' + rna.split('_')[4][0:-4]+ '_sorted_merged.vcf'
 
-        mergecommand = '%s merge -O v %s %s > %s.vcf' % (bcfdir, rnatabix, westabix, mergename)
+        mergecommand = '%s merge -O v %s %s > %s' % (bcfdir, rnatabix, westabix, mergename)
 
         #print 'Merging gsearch output files...'
         os.system(mergecommand)
@@ -219,7 +238,8 @@ def main():
 
         print '----------------------------------------------------'
 
-        bcfdir = findbcf();
+        bcfdir = findbcf()
+        vcfdir = findvcf()
 
         rnapool = glob.glob('*_RNA_snp_shared.vcf')
         wespool = glob.glob('*_WES_snp_shared.vcf')
@@ -234,7 +254,7 @@ def main():
                                 rna_match = rna
                                 wes_match = wes
 
-                                bcfmerge(rna, wes, bcfdir)
+                                bcfmerge(rna, wes, bcfdir, vcfdir)
 
                 counter += 1
                 progress = counter / len(rnapool) * 100
