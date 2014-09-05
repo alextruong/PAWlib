@@ -64,7 +64,7 @@ def main():
 	monoallelic_common = glob.glob('*_monoallelic_common*.vcf')
 	monoallelic_unique = glob.glob('*_monoallelic_unique*.vcf')
 	gene_lists = glob.glob('*_genelist.txt')
-	gene_dictionaries = glob.glob('*_gene_dictionary.csv')
+	gene_dictionaries = glob.glob('*_gene_dictionary.txt')
 	lineage_files = glob.glob('*_traced_WES.txt')
 	variant_comparison_files = monoallelic_common + monoallelic_unique + gene_lists + gene_dictionaries + lineage_files
 
