@@ -24,7 +24,7 @@ def vepcaller(filename, veploc):
         print 'Running VEP on %s...' % filename
         noextension = filename[0:-4]
 
-        command = veploc + "/ perl variant_effect_predictor.pl --port 3337 --cache --refseq --symbol -i " + filename + " -o " + noextension + "_annotated.vcf"
+        command = veploc + " --port 3337 --cache --refseq --symbol -i " + filename + " -o " + noextension + "_annotated.vcf"
 
         os.system(command)
 
