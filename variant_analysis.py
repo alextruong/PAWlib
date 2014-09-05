@@ -41,7 +41,6 @@ def monoallelic_comparison(monoallelic_query, full_merge_reference):
 
         common = set(full_merge_variant_key).intersection( set(monoallelic_variant_key) )
 
-
         unique = set(monoallelic_variant_key).difference( set(full_merge_variant_key) )
         
 
@@ -254,7 +253,7 @@ def main():
 
                                 other_child = 's1'
                                 proband_common_monoallelic, sibling_common_monoallelic, proband_unique = monoallelic_comparison(monoallelic_data, full_reference_file_data)
-                                write_monoallelic_to_file(proband_common_headers, proband_common_monoallelic, sibling_common_monoallelic, ref_headers, sibling_unique, other_child, monoallelic_file)
+                                write_monoallelic_to_file(proband_common_headers, proband_common_monoallelic, sibling_common_monoallelic, ref_headers, proband_unique, other_child, monoallelic_file)
         
                         elif individual == 's1':
                                 
