@@ -223,10 +223,14 @@ def main():
 
         
         gz_tbi_files = glob.glob('*.gz.*')
+        merge_halves = glob.glob('*_shared.vcf')
+        temp_files = gz_tbi_files + merge_halves
         print "Deleting temporary gz/tbi files..."
         
-        for temp_file in gz_tbi_files:
+        for temp_file in temp_files:
                 os.system('rm %s' % temp_file)
+                
+        
         print "Done!"
         
         print 'Complete!'
