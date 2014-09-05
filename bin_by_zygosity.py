@@ -61,7 +61,7 @@ def parse_combinations(data, file_name):
                         monoallelic_variants.append(data[i])
                 
                 else:
-                        print 'There are indels present in data set'
+                        print 'Parsing failed, columns in wrong position'
                         sys.exit(1)
         
         file_name.append(name)
