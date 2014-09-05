@@ -119,9 +119,11 @@ def write_monoallelic_file(monoallelic_variants, file_name, headers):
                         w.write(line + '\n')
                 
                 for line in monoallelic_variants:
-                        for row in line:
-                                w.write('%s\t' % row)
-                        w.write('\n')
+                        for index, row in enumerate(line):
+                                if index != len(line) - 1:
+                                        w.write('%s\t' % row)
+                                else:
+                                        w.write('%s\n' % row)
                         
                         
                         
@@ -137,9 +139,11 @@ def write_other_mismatch(other_mismatch, file_name, headers):
                         w.write(line + '\n')
                 
                 for line in other_mismatch:
-                        for row in line:
-                                w.write('%s\t' % row)
-                        w.write('\n')
+                        for index, row in enumerate(line):
+                                if index != len(line) - 1:
+                                        w.write('%s\t' % row)
+                                else:
+                                        w.write('%s\n' % row)
 
 def write_matching_het(matching_het, file_name, headers):
 
@@ -153,10 +157,12 @@ def write_matching_het(matching_het, file_name, headers):
                         w.write(line + '\n')
                 
                 for line in matching_het:
-                        for row in line:
-                                w.write('%s\t' % row)
-                        w.write('\n')
-
+                        for index, row in enumerate(line):
+                            if index != len(line) - 1:
+                                        w.write('%s\t' % row)
+                                else:
+                                        w.write('%s\n' % row)
+                                        
 def write_matching_hom(matching_hom, file_name, headers):
 
         
@@ -169,10 +175,11 @@ def write_matching_hom(matching_hom, file_name, headers):
                         w.write(line + '\n')
                 
                 for line in matching_hom:
-                        for row in line:
-                                w.write('%s\t' % row)
-                        w.write('\n')
-        
+                        for index, row in enumerate(line):
+                                if index != len(line) - 1:
+                                        w.write('%s\t' % row)
+                                else:
+                                        w.write('%s\n' % row)
 def main():
 
         file_names = glob.glob('*_merged.vcf')
