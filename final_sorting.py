@@ -73,7 +73,7 @@ def main():
 	#this creates a unique set of all of the family IDs
 	family_ids = []
 	for file_name in key_data:
-		if file_name[0] not in family_ids and file_name[0].isdigit():
+		if file_name[0] not in family_ids:
 			family_ids.append(file_name[0])
 		else:
 			continue
