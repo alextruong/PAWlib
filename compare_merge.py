@@ -117,13 +117,11 @@ def findbcf():
 def bcfmerge(rna, wes, bcfdir):
         """bgzip and tabix output files from gsearch, and use bcftools to merge matching files"""
 
-        bgzipcommand = "bgzip %s; bgzip %s" % (rna, wes)
-
         rnatemp = rna[0:-4] + '_sorted.vcf'
         westemp = wes[0:-4] + '_sorted.vcf'
 
-        rnatabix = rna + '.gz'
-        westabix = wes + '.gz'
+        rnatabix = rnatemp + '.gz'
+        westabix = westemp + '.gz'
         
         bgzipcommand = "bgzip %s; bgzip %s" % (rnatemp, westemp)
 
