@@ -334,6 +334,12 @@ def main():
                                 write_lineage_files(individual, unique_monoallelic_sibling_data, mother_zygosity, father_zygosity, monoallelic_file)
                         else:
                                 continue
-
+        
+        all_vcfs = glob.glob('*.vcf')
+        sort = 'vcf-sort %s > %s'
+        
+        for vcf in all_vcfs:
+                os.system(sort % (vcf, vcf))
+        
 if __name__ == "__main__":
         main()
