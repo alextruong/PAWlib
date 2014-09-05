@@ -142,12 +142,15 @@ def gene_comparison(*args):
                                 key = line[-1].split(';')[-1].split('=')[-1]
                                 value = line[1]
         
-                                if key not in ref_gene_dict and (value not in ref_gene_dict[key]):
+                                if key not in ref_gene_dict:
                                         ref_gene_dict[key] = []
                                         ref_gene_dict[key].append(value)
                 
                                 else:
-                                       ref_gene_dict[key].append(value)
+                                        if value not in ref_gene_dict[key]:
+                                                ref_gene_dict[key].append(value)
+                                        else:
+                                                continue
 
         if len(args) == 2:
                 query_genes = args[1]
