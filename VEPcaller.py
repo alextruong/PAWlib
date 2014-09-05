@@ -44,7 +44,7 @@ def main():
                         vepcaller(monoallelic, veploc)
 
         for merge in full_merge:
-                if merge.split('_')[0][0:-2] in ['p1', 's1']:
+                if merge.split('-')[0][0:-2] in ['p1', 's1']:
                         vepcaller(merge, veploc)
 
 if __name__ == "__main__":
