@@ -335,7 +335,7 @@ def main():
                         else:
                                 continue
         
-        all_vcfs = glob.glob('*.vcf')
+        all_vcfs = glob.glob('*monoallelic*.vcf')
         sort = 'vcf-sort %s > %s'
         
         for vcf in all_vcfs:
