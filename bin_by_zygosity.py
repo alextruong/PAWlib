@@ -107,14 +107,14 @@ def write_to_file(master_file, family_number):
         print 'Done!'
 
 
-def write_monoallelic_file(monoallelic_variants, file_name, headers):
+def write_vcf_files(monoallelic_variants, other_mismatch, matching_het, matching_hom, file_name, headers):
         
         
-        new_file_name = file_name[0:-4] + '_RNA-hom_WES-het.vcf'
+        monoallelic_file = file_name[0:-4] + '_RNA-hom_WES-het.vcf'
         
         print 'Writing monoallelic file...'
         
-        with open(new_file_name, 'w') as w:
+        with open(monoallelic_file, 'w') as w:
                 for line in headers:
                         w.write(line + '\n')
                 
@@ -124,17 +124,12 @@ def write_monoallelic_file(monoallelic_variants, file_name, headers):
                                         w.write('%s\t' % row)
                                 else:
                                         w.write('%s\n' % row)
-                        
-                        
-                        
-def write_other_mismatch(other_mismatch, file_name, headers):
-
         
-        new_file_name_other = file_name[0:-4] + '_RNA-het_WES-hom.vcf'
+        other_mismatch_file = file_name[0:-4] + '_RNA-het_WES-hom.vcf'
         
         print 'Writing other mismatch file...'
         
-        with open(new_file_name_other, 'w') as w:
+        with open(other_mismatch_file, 'w') as w:
                 for line in headers:
                         w.write(line + '\n')
                 
@@ -143,16 +138,13 @@ def write_other_mismatch(other_mismatch, file_name, headers):
                                 if index != len(line) - 1:
                                         w.write('%s\t' % row)
                                 else:
-                                        w.write('%s\n' % row)
-
-def write_matching_het(matching_het, file_name, headers):
-
-        
-        new_file_name = file_name[0:-4] + '_het-matching.vcf'
+                                        w.write('%s\n' % row)                
+                        
+        matching_het_file = file_name[0:-4] + '_het-matching.vcf'
         
         print 'Writing matching heterozygous file...'
         
-        with open(new_file_name, 'w') as w:
+        with open(matching_het_file, 'w') as w:
                 for line in headers:
                         w.write(line + '\n')
                 
@@ -161,16 +153,13 @@ def write_matching_het(matching_het, file_name, headers):
                                 if index != len(line) - 1:
                                         w.write('%s\t' % row)
                                 else:
-                                        w.write('%s\n' % row)
+                                        w.write('%s\n' % row)        
                                         
-def write_matching_hom(matching_hom, file_name, headers):
-
-        
-        new_file_name = file_name[0:-4] + '_hom-matching.vcf'
+        matching_hom_file = file_name[0:-4] + '_hom-matching.vcf'
 
         print 'Writing matching homozygous file...'
         
-        with open(new_file_name, 'w') as w:
+        with open(matching_hom_file, 'w') as w:
                 for line in headers:
                         w.write(line + '\n')
                 
@@ -180,6 +169,8 @@ def write_matching_hom(matching_hom, file_name, headers):
                                         w.write('%s\t' % row)
                                 else:
                                         w.write('%s\n' % row)
+                                        
+
 def main():
 
         file_names = glob.glob('*_merged.vcf')
@@ -196,12 +187,7 @@ def main():
                 for individual in family_files:
                         data, headers = read_data(individual)
                         new_file, monoallelic_variants, other_mismatch, matching_het, matching_hom = parse_combinations(data, individual)
-                        write_monoallelic_file(monoallelic_variants, individual, headers)
-                        write_other_mismatch(other_mismatch, individual, headers)
-                        write_matching_het(matching_het, individual, headers)
-                        write_matching_hom(matching_hom, individual, headers)
-
-
+                        write_vcf_files(monoallelic_variants, other_mismatch, matching_het, matching_hom, individual, headers)
                         master_file.append(new_file)
         
                 write_to_file(master_file, family_number)
