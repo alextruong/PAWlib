@@ -158,7 +158,7 @@ def write_matching_het(matching_het, file_name, headers):
                 
                 for line in matching_het:
                         for index, row in enumerate(line):
-                            if index != len(line) - 1:
+                                if index != len(line) - 1:
                                         w.write('%s\t' % row)
                                 else:
                                         w.write('%s\n' % row)
