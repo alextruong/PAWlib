@@ -45,10 +45,7 @@ def main():
 	#outputs from gsearch and merge script
 	gsearch_files = glob.glob('*_shared.vcf')
 	merge_files = glob.glob('*_merged.vcf')
-	gz_files = glob.glob('*vcf.gz')
-	tabix_files = glob.glob('*vcf.gz.tbi')
-	temp_files = gz_files + tabix_files
-	gsearch_merge_files = gsearch_files + merge_files + gz_files + tabix_files
+	gsearch_merge_files = gsearch_files + merge_files
 	
 
 	#output from VEP calling script
@@ -116,10 +113,7 @@ def main():
 				os.system('mv %s %s/snp/%s' % (vcf, family_id, directories[0]))
 
 			elif vcf in gsearch_merge_files:
-				if vcf in temp_files:
-					os.system('rm %s' % vcf)
-				else:
-					os.system('mv %s %s/snp/%s' % (vcf, family_id, directories[1]))
+				os.system('mv %s %s/snp/%s' % (vcf, family_id, directories[1]))
 
 			elif vcf in binning_files:
 				os.system('mv %s %s/snp/%s' % (vcf, family_id, directories[2]))
