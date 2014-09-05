@@ -221,6 +221,14 @@ def main():
 
         #os.system('cd ' + outdir + '; mkdir matching; mv output1.vcf matching; mv output2.vcf matching; mkdir nonmatching; mv unmatched.output1.vcf nonmatching; mv unmatched.output2.vcf nonmatching; mkdir merged')
 
+        
+        gz_tbi_files = glob.glob('*.gz.*')
+        print "Deleting temporary gz/tbi files..."
+        
+        for temp_file in gz_tbi_files:
+                os.system('rm %s' % temp_file)
+        print "Done!"
+        
         print 'Complete!'
 
 
