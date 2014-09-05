@@ -5,7 +5,7 @@ from __future__ import division
 import os
 import sys
 import glob
-import csv
+
 
 def read_data(filename):
         """reads in data from file, creates list of list, returns list of list and headers"""
@@ -165,15 +165,17 @@ def gene_comparison(*args):
 
 def write_gene_comparison_dictionary(gene_dictionary, filename):
 
-        writer = csv.writer(open(filename[0:-4] + '_monoallelic_gene_dictionary.csv', 'wb'))
-        for key, value in gene_dictionary.items():
-                        writer.writerow([key, value])
+        with open(filename[0:-4] + '_monoallelic_gene_dictionary.txt', 'w'):
+                for key in gene_dictionary:
+                        positions = ','.join(gene_dictionary[key])
+                        w.write(str(key) + ':' + positions + '\n')
 
 def write_gene_comparison_dictionary_common(common_genes, filename):
 
-        writer = csv.writer(open(filename[0:-4] + '_monoallelic_common_gene_dictionary.csv', 'wb'))
-        for key, value in common_genes.items():
-                        writer.writerow([key, value])
+        with open(filename[0:-4] + '_monoallelic_common_gene_dictionary.txt', 'w'):
+                for key in gene_dictionary:
+                        positions = ','.join(gene_dictionary[key])
+                        w.write(str(key) + ':' + positions + '\n')
 
 def trace_lineage(query_variants, reference_WES):
 
