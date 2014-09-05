@@ -27,7 +27,7 @@ Due to the variable nature of the input data, we request that all input files
 be associated with a tab-delimited text file of the format
 
 #FAMILYID ID  RNAFILENAME WESFILENAME GENDER
-#<familyid>  <p1|s1|mo|fa> <RNA-seq file>  <WES file>  <m|f>
+<familyid>  <p1|s1|mo|fa> <RNA-seq file>  <WES file>  <m|f>
 .
 .
 .
