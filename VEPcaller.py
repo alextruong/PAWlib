@@ -19,7 +19,7 @@ def find_vep():
         return veploc
 
 
-def vepcaller(filepath, veploc):
+def vepcaller(filename, veploc):
         
         print 'Running VEP on %s...' % filename
         noextension = filename[0:-4]
