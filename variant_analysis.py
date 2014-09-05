@@ -335,12 +335,15 @@ def main():
                         else:
                                 continue
         
-        all_vcfs = glob.glob('*monoallelic*.vcf')
+        monoallelic_vcfs = glob.glob('*monoallelic*.vcf')
         sort = 'vcf-sort %s > %s'
         
-        for vcf in all_vcfs:
+        for vcf in monoallelic_vcfs:
                 new_name = str(vcf[0:-4]) + '_sorted.vcf' 
                 os.system(sort % (vcf, new_name))
+                
+        for vcf in monoallelic_vcfs:
+                os.system('rm %s' % vcf)
         
 if __name__ == "__main__":
         main()
