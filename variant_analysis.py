@@ -339,7 +339,8 @@ def main():
         sort = 'vcf-sort %s > %s'
         
         for vcf in all_vcfs:
-                os.system(sort % (vcf, vcf))
+                new_name = str(vcf[0:-4]) + '_sorted.vcf' 
+                os.system(sort % (vcf, new_name))
         
 if __name__ == "__main__":
         main()
