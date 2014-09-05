@@ -4,6 +4,7 @@
 import os
 import sys
 import commands
+import glob
 
 
 def find_vep():
