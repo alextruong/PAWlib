@@ -45,7 +45,8 @@ def main():
 	#outputs from gsearch and merge script
 	gsearch_files = glob.glob('*_shared.vcf')
 	merge_files = glob.glob('*_merged.vcf')
-	gsearch_merge_files = gsearch_files + merge_files
+	match_coordinates = glob.glob('*_match_coordinates.txt')
+	gsearch_merge_files = gsearch_files + merge_files + match_coordinates
 	
 
 	#output from VEP calling script
@@ -57,8 +58,7 @@ def main():
 	matching_het = glob.glob('*_het-matching.vcf')
 	matching_hom = glob.glob('*_hom-matching.vcf')
 	matrix_counts = glob.glob('*_matrix_counts.txt')
-	match_coordinates = glob.glob('*_match_coordinates.txt')
-	binning_files = monoallelic_files + other_mismatch + matching_het + matching_hom + matrix_counts + match_coordinates
+	binning_files = monoallelic_files + other_mismatch + matching_het + matching_hom + matrix_counts
 
 	#all outputs from variant compare script
 	monoallelic_common = glob.glob('*_monoallelic_common*.vcf')
