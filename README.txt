@@ -1,7 +1,4 @@
-PAWlib
-======
-
-Pedigree Analysis Workflow (rough)
+PAWlib: Pedigree Analysis Workflow (rough)
 
 INTRODUCTION
 -------------------------------------------------------------------------------
@@ -203,9 +200,31 @@ These files contain the common variants (reference-side) derived from the compar
 These files contain the zygosity information from the parents given an individual's RNA-hom_WES-het file.
 
 
+SCRIPT FUNCTIONALITY
+---------------------------------------------------------------------------------------------
+RNA_processing.py (WES_processing.py) - 
+Takes input files, filters by QUAL/GQ, and separates SNPs from indels.
+
+compare_merge.py - 
+Takes RNA SNP and WES SNP files and grabs all the shared variants, then consolidates the information into a single "merge" file (one variant, two sets of information: RNA and WES, e.g. zygosity, scores, etc.) per individual. Matches at multiallelic sites are noted in a separate file.
+
+bin_by_zygosity.py - 
+Takes the merge files and generates a set of counts based on zygosity combinations (e.g. RNA heterozygous/WES homozygous, etc.). Files containing the corresponding variants are also genrated.
+
+VEPcaller.py - executes a command-line version of VEP to annotate all fles from the previous step that are RNA homozygous/WES heterozygous (monoallelic), as well as both the proband and sibling merge files from the step before. Generates the annotated files and corresponding HTML summary files.
+
+variant_analysis.py - does a number of things: 
+1) compare proband monoallelic variant files to sibling merge files, and vice versa. Record common variants and information from both sides; output in files appropriately named. 
+1.5) generate gene lists based on step 1.
+2) Take monoallelic child variants (proband|sibling) and trace them in mother and father WES files. Note zygosities to infer inheritance of variants.
+3) take parental monoallelic variants and generate lists of interesting genes (for external analysis).
 
 
+CLOSING REMARKS
+---------------------------------------------------------------------------------------------
+This was the culmination of a summer's worth of work at Boston Children's Hospital in an internship under Dr. Sek Won Kong.
+Please contact Joey Orofino, Alex Truong, or Deep Shah (in that order) if there are any questions regarding the code.
 
-
-
-The variant_compare script generates a gene list of monoallelic genes present for proband, sibling, father and mother. These lists can be put into a venn diagram generating tool to generate a venn diagram to see the intersection of the two gene lists.
+Joey Orofino: jorofino@bu.edu
+Alex Truong: atruong@bu.edu
+Deep Shah: deepsh@bu.edu
