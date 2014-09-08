@@ -166,14 +166,14 @@ def gene_comparison(*args):
 
 def write_gene_comparison_dictionary(gene_dictionary, filename):
         """standard write out"""
-        with open(filename[0:-4] + '_monoallelic_gene_dictionary.txt', 'w'):
+        with open(filename[0:-4] + '_monoallelic_gene_dictionary.txt', 'w') as w:
                 for key in gene_dictionary:
                         positions = ','.join(gene_dictionary[key])
                         w.write(str(key) + '-' + positions + '\n')
 
 def write_gene_comparison_dictionary_common(common_genes, filename):
         """standard write out"""
-        with open(filename[0:-4] + '_monoallelic_common_gene_dictionary.txt', 'w'):
+        with open(filename[0:-4] + '_monoallelic_common_gene_dictionary.txt', 'w') as w:
                 for key in gene_dictionary:
                         positions = ','.join(gene_dictionary[key])
                         w.write(str(key) + '-' + positions + '\n')
