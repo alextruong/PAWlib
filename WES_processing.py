@@ -59,7 +59,7 @@ def filter_qual(data, input_qual, input_het, input_hom):
 
 
 def filter_snp_indel(qual_gq_filtered_rows):
-        """filter rows into snps, and indels"""
+        """filter rows into snps, and indels based on length of alt/ref"""
         
         length = []
         snps = []
@@ -116,14 +116,14 @@ def write_processed_variants(file_name, snps, indels, headers, current_path, key
 
         
 def main():
-        
+        #ensures proper number of arguments
         if len(sys.argv) != 2:
                 print 'Please call script: {0} <keyfile>'.format(sys.argv[0])
                 sys.exit(1)
         
         first_input = str(raw_input("""Do you want default filtering settings? ('y' or 'n') """))
         toggle = first_input.lower()
-
+        #checks for valid inputs for quality filters
         if toggle.isalpha():
                 if toggle == 'y':
                         input_qual = 20
