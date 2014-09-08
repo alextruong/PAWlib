@@ -11,9 +11,9 @@ Certain methods in these scripts (notably variant_compare) will break if a trio 
 
 OVERVIEW OF SCRIPTS
 -------------------------------------------------------------------------------
-There are 6 (7) scripts that do all the work in this pipeline. In order, they are:
+There are 6 scripts that do all the work in this pipeline. In order, they are:
 
-1) RNA_processing.py (WES_processing.py)
+1) VCF_processing.py
 2) compare_merge.py
 3) bin_by_zygosity.py
 4) VEPcaller.py
@@ -33,7 +33,7 @@ where p1 = proband, s1 = sibling, mo = mother, and fa = father.
 
 EXECUTION OF SCRIPTS
 -------------------------------------------------------------------------------
-The first 5(6) scripts need to be in the same directory as the input files to
+The first 5 scripts need to be in the same directory as the input files to
 run. These scripts are automatically batched; if for some reason it is required
 to run the script on a specific file(s), quarantine those files and move/copy the scripts to that new directory to run in isolation.
 
@@ -52,9 +52,9 @@ These scripts were developed in a Python 2.x environment; no testing for compati
 
 ***
 
-To execute RNA_processing.py (or WES_processing.py), specify the key file as an argument:
+To execute VCF_processing.py, specify the key file as an argument:
 
-python RNA_processing.py keyfile.txt
+python VCF_processing.py keyfile.txt
 
 or something to that effect. The script will inform of erroneous execution with similar instructions.
 
@@ -202,7 +202,7 @@ These files contain the zygosity information from the parents given an individua
 
 SCRIPT FUNCTIONALITY
 ---------------------------------------------------------------------------------------------
-RNA_processing.py (WES_processing.py) - 
+VCF_processing - 
 Takes input files, filters by QUAL/GQ, and separates SNPs from indels.
 
 compare_merge.py - 
