@@ -13,12 +13,12 @@ OVERVIEW OF SCRIPTS
 -------------------------------------------------------------------------------
 There are 6 scripts that do all the work in this pipeline. In order, they are:
 
-1) VCF_processing.py
-2) compare_merge.py
-3) bin_by_zygosity.py
-4) VEPcaller.py
-5) variant_analysis.py
-6) final_sorting.py
+1) VCF_processing.py - Input: All vcf files (RNA and WES), Output: Filtered VCF files by gq/quality, and snp/indel
+2) compare_merge.py - Input: Output SNP files from step 1, Output: Merged files
+3) bin_by_zygosity.py - Input: Merged files from step 2, Output: Counts of variants by zygosity (.txt), VCFs for 2x2 table 
+4) VEPcaller.py - Input: All RNA-homozygous/WES-heterozygous VCFs, and proband/sibling full merges, Output: Annotated input files
+5) variant_analysis.py - Input: Annotated files from step 4, original WES files from parents, RNA-homozygous/WES-heterozygous files from step 3, and proband/sibling full merges from step 2, Output: 
+6) final_sorting.py - Input: All files in directory, Output: Directories by family id, SNPS/INDELS, and script outputs
 
 Due to the variable nature of the input data, we request that all input files
 be associated with a tab-delimited text file of the format
