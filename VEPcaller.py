@@ -38,14 +38,14 @@ def main():
         veploc = find_vep()
 
         monoallelic_files = glob.glob('*_RNA-hom_WES-het.vcf')
+        RNA_editing_files = glob.glob('*_RNA-het_WES-hom.vcf')
         full_merge = glob.glob('*_merged.vcf')
 
         for monoallelic in monoallelic_files:
                         vepcaller(monoallelic, veploc)
-
-        for merge in full_merge:
-                if merge.split('-')[0][-2:] in ['p1', 's1']:
-                        vepcaller(merge, veploc)
+                        
+        for RNA_editing in RNA_editing_files:
+                        vepcaller(RNA_editing, veploc)
 
 if __name__ == "__main__":
         main()
