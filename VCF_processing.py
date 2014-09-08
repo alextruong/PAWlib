@@ -49,10 +49,10 @@ def filter_qual_WES(data, input_qual, input_het, input_hom):
         for i in xrange(len(gq_score)):
                 if genotype[i] in ['0/1', '1/0'] and float(qual_score[i]) >= input_qual:
                         if int(gq_score[i]) >= input_het:
-                                qual_gq_filtered_rows.append(data[i])
+                                qual_gq_filtered_WES_rows.append(data[i])
                 elif genotype[i] == '1/1' and float(qual_score[i]) >= input_qual:
                         if int(gq_score[i]) >= input_hom:
-                                qual_gq_filtered_rows.append(data[i])
+                                qual_gq_filtered_WES_rows.append(data[i])
 
         
         return qual_gq_filtered_WES_rows
@@ -72,10 +72,10 @@ def filter_qual_RNA(data, input_qual, input_het, input_hom):
         for i in xrange(len(gq_score)):
                 if genotype[i] in ['0/1', '1/0'] and float(qual_score[i]) >= input_qual:
                         if int(gq_score[i]) >= input_het:
-                                qual_gq_filtered_rows.append(data[i])
+                                qual_gq_filtered_RNA_rows.append(data[i])
                 elif genotype[i] == '1/1' and float(qual_score[i]) >= input_qual:
                         if int(gq_score[i]) >= input_hom:
-                                qual_gq_filtered_rows.append(data[i])
+                                qual_gq_filtered_RNA_rows.append(data[i])
 
        
 
