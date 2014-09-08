@@ -36,7 +36,7 @@ def filter_qual_WES(data, input_qual, input_het, input_hom):
         qual_score = []
         
         
-        qual_gq_filtered_rows = []
+        qual_gq_filtered_WES_rows = []
         
         for i in data:
                 if i[0].startswith('GL'):
@@ -67,7 +67,7 @@ def filter_qual_RNA(data, input_qual, input_het, input_hom):
         qual_score = [i[5] for i in data]
 
 
-        qual_gq_filtered_rows = []
+        qual_gq_filtered_RNA_rows = []
 
         for i in xrange(len(gq_score)):
                 if genotype[i] in ['0/1', '1/0'] and float(qual_score[i]) >= input_qual:
@@ -192,9 +192,9 @@ def main():
                         
                         headers, data = read_data(file_name)
                         print file_name, ': Data read into buffer'
-                        qual_gq_filtered_rows_WES = filter_qual_WES(data, input_qual, input_het, input_hom)
+                        qual_gq_filtered_WES_rows = filter_qual_WES(data, input_qual, input_het, input_hom)
                         print file_name, ': Variants filtered by quality'
-                        snps, indels = filter_snp_indel(qual_gq_filtered_rows_WES)
+                        snps, indels = filter_snp_indel(qual_gq_filtered_WES_rows)
                         print file_name, ': Variants split into snps/indels'
                         write_processed_variants(file_name, snps, indels, headers, key_data)
                         print file_name, ': Variants written to file'
@@ -204,9 +204,9 @@ def main():
                
                         headers, data = read_data(file_name)
                         print file_name, ': Data read into buffer'
-                        qual_gq_filtered_rows_RNA = filter_qual_RNA(data, input_qual, input_het, input_hom)
+                        qual_gq_filtered_RNA_rows = filter_qual_RNA(data, input_qual, input_het, input_hom)
                         print file_name, ': Variants filtered by quality'
-                        snps, indels = filter_snp_indel(qual_gq_filtered_rows_RNA)
+                        snps, indels = filter_snp_indel(qual_gq_filtered_RNA_rows)
                         print file_name, ': Variants split into snps/indels'
                         write_processed_variants(file_name, snps, indels, headers, key_data)
                         print file_name, ': Variants written to file'
