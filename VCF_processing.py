@@ -198,7 +198,7 @@ def main():
                         print file_name, ': Variants split into snps/indels'
                         write_processed_variants(file_name, snps, indels, headers, key_data)
                         print file_name, ': Variants written to file'
-                        print str(round((100*(index + 1)) / len(file_names), 3)) + '% complete\n'
+                        print str(round((100*(index + 1)) / len(all_vcf_files), 3)) + '% complete\n'
                 
                 elif file_name in RNA_files:
                
@@ -210,7 +210,7 @@ def main():
                         print file_name, ': Variants split into snps/indels'
                         write_processed_variants(file_name, snps, indels, headers, key_data)
                         print file_name, ': Variants written to file'
-                        print str(round((100*(index + 1)) / len(file_names), 3)) + '% complete\n'
+                        print str(round((100*(index + 1)) / len(all_vcf_files), 3)) + '% complete\n'
 
 
 if __name__ == "__main__":
