@@ -29,6 +29,7 @@ def read_data(filename):
 
 
 def monoallelic_comparison(monoallelic_query, full_merge_reference):
+        """same method as gsearchcompare, it compares tuples of positional information to match"""
         
         lmonoallelic_query = list(monoallelic_query)
         lfull_merge_reference = list(full_merge_reference)
@@ -74,7 +75,7 @@ def monoallelic_comparison(monoallelic_query, full_merge_reference):
         return query_common_monoallelic, ref_common_monoallelic, query_unique
 
 def write_monoallelic_to_file(query_common_headers, query_common_monoallelic, ref_common_monoallelic, ref_common_headers, query_unique, other_child, filename):
-
+        """standard writing to file"""
         name_split = filename[0:-4]
         query_common_full_name = name_split + '_monoallelic_common.vcf'
         ref_common_full_name = name_split + '_monoallelic_common_in_%s.vcf' % other_child
@@ -115,7 +116,7 @@ def write_monoallelic_to_file(query_common_headers, query_common_monoallelic, re
                                         w.write('%s\n' % column)
 
 def make_gene_list(annotated_query_file, monoallelic_file):
-
+        """makes a gene list based on VEP annotation"""
 
         query_genes = set([str(i[-1].split(';')[-1].split('=')[-1]) for i in annotated_query_file if i[-1].split(';')[-1].split('=')[0] == 'SYMBOL'])
 
@@ -164,21 +165,21 @@ def gene_comparison(*args):
         return ref_gene_dict, common_genes
 
 def write_gene_comparison_dictionary(gene_dictionary, filename):
-
+        """standard write out"""
         with open(filename[0:-4] + '_monoallelic_gene_dictionary.txt', 'w'):
                 for key in gene_dictionary:
                         positions = ','.join(gene_dictionary[key])
                         w.write(str(key) + '-' + positions + '\n')
 
 def write_gene_comparison_dictionary_common(common_genes, filename):
-
+        """standard write out"""
         with open(filename[0:-4] + '_monoallelic_common_gene_dictionary.txt', 'w'):
                 for key in gene_dictionary:
                         positions = ','.join(gene_dictionary[key])
                         w.write(str(key) + '-' + positions + '\n')
 
 def trace_lineage(query_variants, reference_WES):
-
+        """same function as gsearch compare merge"""
 
         lquery_variants = list(query_variants)
         lreference_WES = list(reference_WES)
@@ -209,7 +210,7 @@ def trace_lineage(query_variants, reference_WES):
         return zygosity
 
 def write_lineage_files(individual, query_variants, mother_zygosity, father_zygosity, filename):
-
+        """writes out file with variant, and zygosity in mother and father"""
         header_lines = [individual, 'Mother', 'Father']
 
         with open(filename[0:-4] + '_traced_WES.txt', 'w') as w:
@@ -224,9 +225,9 @@ def write_lineage_files(individual, query_variants, mother_zygosity, father_zygo
                         w.write(father_zygosity[index] + '\n')
 
 def main():
+        
+        #script loops through on a family level
         file_names = glob.glob('*_merged.vcf')
-
-
         family_list = set([i.split('_')[0] for i in file_names])
         
         master_file = []
