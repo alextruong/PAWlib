@@ -107,7 +107,7 @@ def filter_snp_indel(qual_gq_filtered_rows):
         return snps, indels
 
 
-def write_processed_variants(file_name, snps, indels, headers, current_path, key_data):
+def write_processed_variants(file_name, snps, indels, headers, key_data):
         """defines naming schemes for snps/indels, then writes to file with original vcf format"""
         
         for i in key_data:      
@@ -196,7 +196,7 @@ def main():
                         print file_name, ': Variants filtered by quality'
                         snps, indels = filter_snp_indel(qual_gq_filtered_rows_WES)
                         print file_name, ': Variants split into snps/indels'
-                        write_processed_variants(file_name, snps, indels, headers, current_path, key_data)
+                        write_processed_variants(file_name, snps, indels, headers, key_data)
                         print file_name, ': Variants written to file'
                         print str(round((100*(index + 1)) / len(file_names), 3)) + '% complete\n'
                 
@@ -208,7 +208,7 @@ def main():
                         print file_name, ': Variants filtered by quality'
                         snps, indels = filter_snp_indel(qual_gq_filtered_rows_RNA)
                         print file_name, ': Variants split into snps/indels'
-                        write_processed_variants(file_name, snps, indels, headers, current_path, key_data)
+                        write_processed_variants(file_name, snps, indels, headers, key_data)
                         print file_name, ': Variants written to file'
                         print str(round((100*(index + 1)) / len(file_names), 3)) + '% complete\n'
 
