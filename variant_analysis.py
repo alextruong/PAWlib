@@ -174,8 +174,8 @@ def write_gene_comparison_dictionary(gene_dictionary, filename):
 def write_gene_comparison_dictionary_common(common_genes, filename):
         """standard write out"""
         with open(filename[0:-4] + '_monoallelic_common_gene_dictionary.txt', 'w') as w:
-                for key in gene_dictionary:
-                        positions = ','.join(gene_dictionary[key])
+                for key in common_genes:
+                        positions = ','.join(common_genes[key])
                         w.write(str(key) + '-' + positions + '\n')
 
 def trace_lineage(query_variants, reference_WES):
