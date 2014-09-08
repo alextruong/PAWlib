@@ -285,11 +285,13 @@ def main():
 
                 for monoallelic_file in family_files_monoallelic_annotated:             #write gene lists from monoallelic and gene comparison
                 
-                        headers, monoallelic_data = read_data(monoallelic_file) 
+                       
                         individual = monoallelic_file.split('-')[0][-2:]
-                        query_genes = make_gene_list(monoallelic_data, monoallelic_file)
+                        
                         #individual = monoallelic_file.split('-')[0][-2:], gene dictionary called with two arguments (query genes and gene list)
                         if individual == 'p1':
+                                headers, monoallelic_data = read_data(monoallelic_file) 
+                                query_genes = make_gene_list(monoallelic_data, monoallelic_file)
                                 annotated_reference_merge = sibling_annotated
                                 headers, sibling_annotated_data = read_data(annotated_reference_merge)
                                 ref_gene_dict, common_genes = gene_comparison(sibling_annotated_data, query_genes)
@@ -297,6 +299,8 @@ def main():
                                 write_gene_comparison_dictionary_common(common_genes, monoallelic_file)
 
                         elif individual == 's1':
+                                headers, monoallelic_data = read_data(monoallelic_file) 
+                                query_genes = make_gene_list(monoallelic_data, monoallelic_file)
                                 annotated_reference_merge = proband_annotated
                                 headers, proband_annotated_data = read_data(annotated_reference_merge)
                                 ref_gene_dict, common_genes = gene_comparison(proband_annotated_data, query_genes)
