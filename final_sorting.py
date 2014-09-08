@@ -83,7 +83,7 @@ def main():
 	original_files = RNA_original_files + WES_original_files + scripts
 
 
-	if len(all_files) != 1 + len(unprocessed_indels) + len(processed_files) + len(gsearch_merge_files) + len(annotated_files) + len(binning_files) + len(variant_comparison_files) + len(original_files):
+	if len(all_files) != 2 + len(unprocessed_indels) + len(processed_files) + len(gsearch_merge_files) + len(annotated_files) + len(binning_files) + len(variant_comparison_files) + len(original_files):
 		print 'Script does not account for all file types'
 		sys.exit(1)
 	else:
@@ -103,9 +103,10 @@ def main():
 
 	#moves original data files to original folder
 	for vcf in all_files:
-		if vcf in original_files or (vcf == 'sampleKey_truncated.txt'):
+		if vcf in original_files or (vcf == 'sampleKey_truncated.txt') or (vcf == "README.txt"):
 			os.system('mv %s %s/' % (vcf, 'original_files_and_scripts'))
 
+	#moves files into directories by what script produced them
 		else:
 			family_id = vcf.split('_')[0]
 
