@@ -55,7 +55,7 @@ def filter_qual(data, input_qual, input_het, input_hom):
 
 
 def filter_snp_indel(qual_gq_filtered_rows):
-        """filter rows into snps, and indels"""
+        """filter rows into snps, and indels, looks at length of ref/alt to determine"""
 
         length = []
         snps = []
@@ -115,14 +115,15 @@ def write_processed_variants(file_name, snps, indels, headers, current_path, key
 
 
 def main():
-
+        #ensures proper number of system variables
         if len(sys.argv) != 2:
                 print 'Please call script: {0} <keyfile>'.format(sys.argv[0])
                 sys.exit(1)
 
         first_input = str(raw_input("""Do you want default filtering settings? ('y' or 'n') """))
         toggle = first_input.lower()
-
+        
+        #try/catch to ensure proper input scores
         if toggle.isalpha():
                 if toggle == 'y':
                         input_qual = 20
@@ -147,18 +148,11 @@ def main():
         else:
                 print "Please enter only y or n"
                 sys.exit(1)
-
-        
-        current_path = os.getcwd()
-
-
-
+                
         key_file = sys.argv[1]
         key_headers, key_data = read_data(key_file)
 
-        family_ids = []
-        for i in key_data:
-                family_ids.append(i[0])
+        family_ids = [i[0] for i in key_data]
         family_key = set(family_ids)
 
         RNA_files = [i[2] for i in key_data]
