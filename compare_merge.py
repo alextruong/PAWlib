@@ -29,6 +29,7 @@ def read_data(filename):
 
 
 def compare(ref_data, query_data, file_name):
+        """first compares chr#, position, and ref; then, compares alt to determine if match"""
 
         query_out_data = []
         ref_out_data = []
@@ -66,7 +67,7 @@ def compare(ref_data, query_data, file_name):
 
 
 def write_to_file(ref_file, query_file, ref_headers, query_headers, query_out_data, ref_out_data, multiallelic_locations):
-
+        """standard write to file, no trailing tabs, could be done with writelines and join"""
         new_ref_file = ref_file[0:-4] + '_shared.vcf'
         new_query_file = query_file[0:-4] + '_shared.vcf'
 
@@ -221,7 +222,7 @@ def main():
 
         #os.system('cd ' + outdir + '; mkdir matching; mv output1.vcf matching; mv output2.vcf matching; mkdir nonmatching; mv unmatched.output1.vcf nonmatching; mv unmatched.output2.vcf nonmatching; mkdir merged')
 
-        
+        #removes temporary files
         gz_tbi_files = glob.glob('*.gz*')
         merge_halves = glob.glob('*_shared.vcf')
         temp_files = gz_tbi_files + merge_halves
