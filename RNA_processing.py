@@ -152,9 +152,6 @@ def main():
         key_file = sys.argv[1]
         key_headers, key_data = read_data(key_file)
 
-        family_ids = [i[0] for i in key_data]
-        family_key = set(family_ids)
-
         RNA_files = [i[2] for i in key_data]
 
         for index, file_name in enumerate(RNA_files):                  #parse in series, and write out final
