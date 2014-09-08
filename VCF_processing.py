@@ -28,7 +28,7 @@ def read_data(filename):
         return headers, data
 
 
-def filter_qual(data, input_qual, input_het, input_hom):
+def filter_qual_WES(data, input_qual, input_het, input_hom):
         """reads in gt_pl_gq, and qual_score, returns rows with qual_score >= 20 and gq >= 20 (het), gq >= 40 (hom)"""
         
         gq_score = []
@@ -55,7 +55,31 @@ def filter_qual(data, input_qual, input_het, input_hom):
                                 qual_gq_filtered_rows.append(data[i])
 
         
-        return qual_gq_filtered_rows
+        return qual_gq_filtered_WES_rows
+        
+def filter_qual_RNA(data, input_qual, input_het, input_hom):
+        """reads in gt_pl_gq, and qual_score, returns rows with qual_score >= 20 and gq >= 20 (het), gq >= 40 (hom) or values defined by user"""
+
+        gq_score = [i[-1].split(':')[-1] for i in data]
+
+        genotype = [i[-1].split(':')[0] for i in data]
+
+        qual_score = [i[5] for i in data]
+
+
+        qual_gq_filtered_rows = []
+
+        for i in xrange(len(gq_score)):
+                if genotype[i] in ['0/1', '1/0'] and float(qual_score[i]) >= input_qual:
+                        if int(gq_score[i]) >= input_het:
+                                qual_gq_filtered_rows.append(data[i])
+                elif genotype[i] == '1/1' and float(qual_score[i]) >= input_qual:
+                        if int(gq_score[i]) >= input_hom:
+                                qual_gq_filtered_rows.append(data[i])
+
+       
+
+        return qual_gq_filtered_RNA_rows
 
 
 def filter_snp_indel(qual_gq_filtered_rows):
@@ -90,7 +114,11 @@ def write_processed_variants(file_name, snps, indels, headers, current_path, key
                 if i[3] == file_name:
                         snp_name = str(i[0]) + '_' + str(i[1]) + '-' + str(i[-1]) + '_WES' + '_snp.vcf'
                         indel_name = str(i[0]) + '_' + str(i[1]) + '-' + str(i[-1]) + '_WES' + '_indel.vcf'
-
+                elif i[2] == file_name:
+                        snp_name = str(i[0]) + '_' + str(i[1]) + '-' + i[-1] + '_RNA' + '_snp.vcf'
+                        indel_name = str(i[0]) + '_' + str(i[1]) + '-' + i[-1] + '_RNA' + '_indel.vcf'
+                else:
+                        'File not present in key'
 
         with open(snp_name, 'w') as w:
                 for line in headers:
@@ -150,25 +178,39 @@ def main():
                 sys.exit(1)
         
                 
-        current_path = os.getcwd()
         
         key_file = sys.argv[1]
         key_headers, key_data = read_data(key_file)
 
         WES_files = [i[3] for i in key_data]
+        RNA_files = [i[2] for i in key_data]
+        all_vcf_files = WES_files + RNA_files
 
-        for index, file_name in enumerate(WES_files):                  #parse in series, and write out final final
-
-                headers, data = read_data(file_name)
-                print file_name, ': Data read into buffer'
-                qual_gq_filtered_rows = filter_qual(data, input_qual, input_het, input_hom)
-                print file_name, ': Variants filtered by quality'
-                snps, indels = filter_snp_indel(qual_gq_filtered_rows)
-                print file_name, ': Variants split into snps/indels'
-                write_processed_variants(file_name, snps, indels, headers, current_path, key_data)
-                print file_name, ': Variants written to file'
-                print str(round((100*(index + 1)) / len(file_names), 3)) + '% complete\n'
-       
+        for index, file_name in enumerate(all_vcf_files):   #parse in series, and write out final final
+        
+                if file_name in WES_files:
+                        
+                        headers, data = read_data(file_name)
+                        print file_name, ': Data read into buffer'
+                        qual_gq_filtered_rows_WES = filter_qual_WES(data, input_qual, input_het, input_hom)
+                        print file_name, ': Variants filtered by quality'
+                        snps, indels = filter_snp_indel(qual_gq_filtered_rows_WES)
+                        print file_name, ': Variants split into snps/indels'
+                        write_processed_variants(file_name, snps, indels, headers, current_path, key_data)
+                        print file_name, ': Variants written to file'
+                        print str(round((100*(index + 1)) / len(file_names), 3)) + '% complete\n'
+                
+                elif file_name in RNA_files:
+               
+                        headers, data = read_data(file_name)
+                        print file_name, ': Data read into buffer'
+                        qual_gq_filtered_rows_RNA = filter_qual_RNA(data, input_qual, input_het, input_hom)
+                        print file_name, ': Variants filtered by quality'
+                        snps, indels = filter_snp_indel(qual_gq_filtered_rows_RNA)
+                        print file_name, ': Variants split into snps/indels'
+                        write_processed_variants(file_name, snps, indels, headers, current_path, key_data)
+                        print file_name, ': Variants written to file'
+                        print str(round((100*(index + 1)) / len(file_names), 3)) + '% complete\n'
 
 
 if __name__ == "__main__":
