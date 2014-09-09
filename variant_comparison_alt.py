@@ -100,7 +100,7 @@ def unique_and_common_monoallelic_genes(proband_monoallelic_genes, proband_varia
                         proband_positions = ','.join(proband_variant_dict[common_gene])
                         sibling_positions = ','.join(sibling_variant_dict[common_gene])
 
-                        w.write(str(common_gene) + '\t' + proband_positions + '\t' + sibling_positions + '\n'))
+                        w.write(str(common_gene) + '\t' + proband_positions + '\t' + sibling_positions + '\n')
 
         return proband_unique_monoallelic_genes, proband_unique_dict, sibling_unique_monoallelic_genes, sibling_unique_dict
 
