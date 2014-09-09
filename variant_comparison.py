@@ -108,7 +108,7 @@ def make_unique_monoallelic_vcf(monoallelic_file_data, monoallelic_file_headers,
         reference_key = [tuple((i[0], i[1])) for i in lreference_monoallelic_data]
 
         positions_key = [tuple((position.split(':')[0], position.split(':')[1])) for position in positions]
-
+        
         unique_monoallelic_rows = []
         for position in positions_key:
                 if position in reference_key:
@@ -158,7 +158,7 @@ def trace_lineage(unique_variants_dict, reference_WES):
 
         return zygosity, positions
 
-def write_lineage_files(individual, positions, mother_zygosity, father_zygosity, filename):
+def write_lineage_files(unique_dict, individual, positions, mother_zygosity, father_zygosity, filename):
         """writes out file with variant, and zygosity in mother and father"""
         header_lines = [individual, 'Mother', 'Father']
 
@@ -168,8 +168,11 @@ def write_lineage_files(individual, positions, mother_zygosity, father_zygosity,
                 w.write('\n')
 
                 for index, zygosity in enumerate(mother_zygosity):
-                        
-                        w.write(positions[index] + '\t')
+                        for key in unique_dict:
+                                for values in unique_dict[key]:
+                                        if positions[index] in values:
+                                                gene = key
+                        w.write('[' + gene + ']' + positions[index] + '\t')
                         w.write(mother_zygosity[index] + '\t')
                         w.write(father_zygosity[index] + '\n')
 
