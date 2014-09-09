@@ -92,7 +92,7 @@ def unique_and_common_monoallelic_genes(proband_monoallelic_genes, proband_varia
         
 
         with open(common_file_name, 'w') as w:
-                headers = ['Gene', 'p1 variants', 's1 variants']
+                headers = ['#gene', 'p1 variants', 's1 variants']
                 w.writelines('\t'.join(headers))
                 w.write('\n')
                 for common_gene in common_genes:
@@ -160,9 +160,9 @@ def trace_lineage(unique_variants_dict, reference_WES):
 
 def write_lineage_files(unique_dict, individual, positions, mother_zygosity, father_zygosity, filename):
         """writes out file with variant, and zygosity in mother and father"""
-        header_lines = [individual, 'Mother', 'Father']
+        header_lines = [('#' + individual) + ' genes', 'variant', 'mother zygosity', 'father zygosity']
 
-        with open(filename[0:-4] + '_lineage_parent_WES.txt', 'w') as w:
+        with open(filename[0:-4] + '_unique_lineage_parent_WES.txt', 'w') as w:
                 for header in header_lines:
                         w.write(header + '\t')
                 w.write('\n')
@@ -172,7 +172,7 @@ def write_lineage_files(unique_dict, individual, positions, mother_zygosity, fat
                                 for values in unique_dict[key]:
                                         if positions[index] in values:
                                                 gene = key
-                        w.write('[' + gene + ']' + positions[index] + '\t')
+                        w.write(gene + '\t' + positions[index] + '\t')
                         w.write(mother_zygosity[index] + '\t')
                         w.write(father_zygosity[index] + '\n')
 
@@ -180,7 +180,7 @@ def write_gene_dict(gene_var_dict, filename):
         new_gene_var_file = filename[0:-4] + '_full_monoallelic_genes_variants.txt'
         
         with open(new_gene_var_file, 'w') as w:
-                w.write('#gene\t' + 'variants\n'
+                w.write('#gene\t' + 'variants\n')
                 
                 for index, key in enumerate(gene_var_dict):
                         positions = ','.join(gene_var_dict[key])
@@ -244,14 +244,14 @@ def main():
                                 monoallelic_file_headers, monoallelic_file_data = read_data(monoallelic_file)
                                 mother_zygosity, positions = trace_lineage(proband_unique_dict, mother_WES_data)
                                 father_zygosity, positions = trace_lineage(proband_unique_dict, father_WES_data)
-                                write_lineage_files(individual, positions, mother_zygosity, father_zygosity, monoallelic_file)
+                                write_lineage_files(proband_unique_dict, individual, positions, mother_zygosity, father_zygosity, monoallelic_file)
                                 make_unique_monoallelic_vcf(monoallelic_file_data, monoallelic_file_headers, positions, monoallelic_file)
 
                         elif individual == 's1':
                                 monoallelic_file_headers, monoallelic_file_data = read_data(monoallelic_file)
                                 mother_zygosity, positions = trace_lineage(sibling_unique_dict, mother_WES_data)
                                 father_zygosity, positions = trace_lineage(sibling_unique_dict, father_WES_data)
-                                write_lineage_files(individual, positions, mother_zygosity, father_zygosity, monoallelic_file)
+                                write_lineage_files(sibling_unique_dict, individual, positions, mother_zygosity, father_zygosity, monoallelic_file)
                                 make_unique_monoallelic_vcf(monoallelic_file_data, monoallelic_file_headers, positions, monoallelic_file)
                        
                         else:
