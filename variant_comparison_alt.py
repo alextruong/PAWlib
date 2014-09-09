@@ -57,11 +57,6 @@ def create_gene_variant_dictionary(annotated_file, filename):
                                 else:
                                         continue
 
-        with open(filename[0:-4] + '_monoallelic_genelist_variants.txt', 'w') as w:
-                for key in gene_var_dict:
-                        positions = ','.join(gene_var_dict[key])
-                        w.write(str(key) + '\t' + positions + '\n')
-
         return gene_var_dict
 
 
@@ -71,23 +66,30 @@ def unique_and_common_monoallelic_genes(proband_monoallelic_genes, proband_varia
         proband_unique_monoallelic_genes = [unique_gene for unique_gene in proband_monoallelic_genes if unique_gene not in sibling_monoallelic_genes]
         sibling_unique_monoallelic_genes = [unique_gene for unique_gene in sibling_monoallelic_genes if unique_gene not in proband_monoallelic_genes]
 
+        proband_unique_dict = {key:value for key, value in proband_variant_dict.iteritems() if key in proband_unique_monoallelic_genes}
+        sibling_unique_dict = {key:value for key, value in sibling_variant_dict.iteritems() if key in sibling_unique_monoallelic_genes}
+
+
         common_genes = set(proband_monoallelic_genes).intersection(sibling_monoallelic_genes)
 
-        proband_unique_name = proband_file_name[0:-4] + '_unique_monoallelic_genelist.txt'
-        sibling_unique_name = sibling_file_name[0:-4] + '_unique_monoallelic_genelist.txt'
-        common_file_name = proband_file_name.split('_')[0] + '_common_proband_sibling_monoallelic_genelist.txt'
+        proband_unique_name = proband_file_name[0:-4] + '_unique_monoallelic_genelist_variants.txt'
+        sibling_unique_name = sibling_file_name[0:-4] + '_unique_monoallelic_genelist_variants.txt'
+        common_file_name = proband_file_name.split('_')[0] + '_common_p1_s1_monoallelic_genelist_variants.txt'
 
         with open(proband_unique_name, 'w') as w:
+                w.write('#gene' + '\t' + "variants\n")
 
-                w.writelines('\n'.join(proband_unique_monoallelic_genes))
+                for unique_gene in proband_unique_monoallelic_genes:
+                        variants = ','.join(proband_variant_dict[unique_gene])
+                        w.write(unique_gene + '\t' + variants + '\n')
 
         with open(sibling_unique_name, 'w') as w:
-                
-                w.writelines('\n'.join(sibling_unique_monoallelic_genes))
+                w.write('#gene' + '\t' + "variants\n")
 
-        with open(common_file_name, 'w') as w:
-
-                w.writelines('\n'.join(common_genes))
+                for unique_gene in sibling_unique_monoallelic_genes:
+                        variants = ','.join(sibling_variant_dict[unique_gene])
+                        w.write(unique_gene + '\t' + variants + '\n')
+        
 
         with open(common_variants_name, 'w') as w:
                 headers = ['Gene', 'p1 variants', 's1 variants']
@@ -99,50 +101,40 @@ def unique_and_common_monoallelic_genes(proband_monoallelic_genes, proband_varia
 
                         w.write(str(common_gene) + '\t' + proband_positions + '\t' + sibling_positions + '\n'))
 
+        return proband_unique_monoallelic_genes, proband_unique_dict, sibling_unique_monoallelic_genes, sibling_unique_dict
 
 
-def trace_lineage(query_variants, reference_WES):
+def trace_lineage(unique_variants_dict, reference_WES):
         """same function as gsearch compare merge"""
 
-        lquery_variants = list(query_variants)
-        lreference_WES = list(reference_WES)
-        query_variants_alt = [i[4] for i in lquery_variants]
-        WES_alt = [i[4] for i in lreference_WES]
+        positions = [single_key for key in query_variants_dict for single_key in query_variants_dict[key]]
+        query_key = [tuple((position.split(':')[0], position.split(':')[1])) for position in positions]
 
-        query_variants_key = [tuple((i[0], i[1], i[3])) for i in lquery_variants]
-        WES_variants_key = [tuple((i[0], i[1], i[3])) for i in lreference_WES]
+        lreference_WES = list(reference_WES)
+        WES_variants_key = [tuple((i[0], i[1])) for i in lreference_WES]
 
         zygosity = []
-        for i in query_variants_key:
-                if i in WES_variants_key:
-                        query_index = query_variants_key.index(i)
-                        reference_index = WES_variants_key.index(i)
-                        
-                        if query_variants_alt[query_index] == WES_alt[reference_index]:
-                                zygosity.append(lreference_WES[reference_index][-1].split(':')[0])
+        for position in query_key:
+                if position in WES_variants_key:
+                        reference_index = WES_variants_key.index(position)
+                        zygosity.append(lreference_WES[reference_index][-1].split(':')[0])
 
-                        elif query_variants_alt[query_index] != WES_alt[reference_index]:
-                                query_temp = query_variants_alt[query_index].split(',')
-                                ref_temp = WES_alt[reference_index].split(',')
-                        
-                                if any(j in query_temp for j in ref_temp):
-                                        zygosity.append(lreference_WES[reference_index][-1].split(':')[0])
                 else:
                         zygosity.append('N/A')                                  
 
-        return zygosity
+        return zygosity, positions
 
-def write_lineage_files(individual, query_variants, mother_zygosity, father_zygosity, filename):
+def write_lineage_files(individual, positions, mother_zygosity, father_zygosity, filename):
         """writes out file with variant, and zygosity in mother and father"""
         header_lines = [individual, 'Mother', 'Father']
 
-        with open(filename[0:-4] + '_traced_WES.txt', 'w') as w:
+        with open(filename[0:-4] + '_lineage_parent_WES.txt', 'w') as w:
                 for header in header_lines:
                         w.write(header + '\t')
                 w.write('\n')
 
                 for index, zygosity in enumerate(mother_zygosity):
-                        query_variant_info = query_variants[index][0] +  '_' + query_variants[index][1] + '_'  + query_variants[index][3]+ '_'  + query_variants[index][4]
+                        
                         w.write(query_variant_info + '\t')
                         w.write(mother_zygosity[index] + '\t')
                         w.write(father_zygosity[index] + '\n')
@@ -162,38 +154,14 @@ def main():
         
         master_file = []
 
-        monoallelic_files = glob.glob("*_RNA-hom_WES-het.vcf")
-        monoallelic_annotated_files = glob.glob("*_RNA-hom_WES-het_annotated.vcf")
+        all_monoallelic_files = glob.glob("*_RNA-hom_WES-het.vcf")
+        all_monoallelic_annotated_files = glob.glob("*_RNA-hom_WES-het_annotated.vcf")
         
         for family_id in family_list:
                 
-                family_specific_monoallelic_files = [i for i in monoallelic_files if i.split('_')[0] == family_id]
-                mother_WES = "%s_mo-f_WES_snp.vcf" % family_id
-                father_WES = "%s_fa-m_WES_snp.vcf" % family_id
+                family_specific_monoallelic_annotated_files = [i for i in all_monoallelic_annotated_files if i.split('_')[0] == family_id]
 
-                headers, mother_WES_data = read_data(mother_WES)
-                headers, father_WES_data = read_data(father_WES)
-
-                for monoallelic_file in family_specific_monoallelic_files:           #traces lineage from spawn to parent WES
-                        
-                        individual = monoallelic_file.split('-')[0][-2:]
-                        
-                        if individual == 'p1':
-                                headers, monoallelic_proband_data = read_data(monoallelic_file)
-                                mother_zygosity = trace_lineage(monoallelic_proband_data, mother_WES_data)
-                                father_zygosity = trace_lineage(monoallelic_proband_data, father_WES_data)
-                                write_lineage_files(individual, monoallelic_proband_data, mother_zygosity, father_zygosity, monoallelic_file)
-
-                        elif individual == 's1':
-                                headers, monoallelic_sibling_data = read_data(monoallelic_file)
-                                mother_zygosity = trace_lineage(monoallelic_sibling_data, mother_WES_data)
-                                father_zygosity = trace_lineage(monoallelic_sibling_data, father_WES_data)
-                                write_lineage_files(individual, monoallelic_sibling_data, mother_zygosity, father_zygosity, monoallelic_file)
-                       
-                        else:
-                                continue
-
-                for monoallelic_annotated_file in monoallelic_annotated_files:
+                for monoallelic_annotated_file in family_specific_monoallelic_annotated_files:
                         
                         individual = monoallelic_annotated_file.split('-')[0][-2:]
 
@@ -215,25 +183,32 @@ def main():
                                 monoallelic_genes = create_gene_list(data)
                                 write_gene_list(monoallelic_annotated_file, monoallelic_genes)
 
-
-                unique_and_common_monoallelic_genes(proband_monoallelic_genes, proband_monoallelic_genes_variants, proband_file_name, sibling_monoallelic_genes, sibling_monoallelic_genes_variants sibling_file_name)
-
+                proband_unique_monoallelic_genes, proband_unique_dict, sibling_unique_monoallelic_genes, sibling_unique_dict = unique_and_common_monoallelic_genes(proband_monoallelic_genes, proband_monoallelic_genes_variants, proband_file_name, sibling_monoallelic_genes, sibling_monoallelic_genes_variants, sibling_file_name)
 
 
-        
-        # monoallelic_vcfs = glob.glob('*monoallelic*.vcf')
-        
-        # sort = 'vcf-sort %s > %s'
-        
-        # for vcf in monoallelic_vcfs:
-        #         new_name = str(vcf[0:-4]) + '_sorted.vcf' 
-        #         os.system(sort % (vcf, new_name))
-        
-        # updated_monoallelic_vcfs = glob.glob('*monoallelic*.vcf')
-        # for vcf in monoallelic_vcfs:
-        #         if not vcf.split('_')[-1][0:-4] == 'sorted':
-        #                 os.system('rm %s' % vcf)
-        #         else:
-        #                 continue
+                family_specific_monoallelic_files = [i for i in all_monoallelic_files if i.split('_')[0] == family_id]
+                mother_WES = "%s_mo-f_WES_snp.vcf" % family_id
+                father_WES = "%s_fa-m_WES_snp.vcf" % family_id
+
+                headers, mother_WES_data = read_data(mother_WES)
+                headers, father_WES_data = read_data(father_WES)
+
+                for monoallelic_file in family_specific_monoallelic_files:           #traces lineage from spawn to parent WES
+                        
+                        individual = monoallelic_file.split('-')[0][-2:]
+                        
+                        if individual == 'p1':
+                                mother_zygosity, positions = trace_lineage(proband_unique_dict, mother_WES_data)
+                                father_zygosity, positions = trace_lineage(proband_unique_dict, father_WES_data)
+                                write_lineage_files(individual, positions, mother_zygosity, father_zygosity, monoallelic_file)
+
+                        elif individual == 's1':
+                                mother_zygosity, positions = trace_lineage(sibling_unique_dict, mother_WES_data)
+                                father_zygosity, positions = trace_lineage(sibling_unique_dict, father_WES_data)
+                                write_lineage_files(individual, positions, mother_zygosity, father_zygosity, monoallelic_file)
+                       
+                        else:
+                                continue
+
 if __name__ == "__main__":
         main()
