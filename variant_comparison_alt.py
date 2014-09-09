@@ -135,7 +135,7 @@ def write_lineage_files(individual, positions, mother_zygosity, father_zygosity,
 
                 for index, zygosity in enumerate(mother_zygosity):
                         
-                        w.write(query_variant_info + '\t')
+                        w.write(positions[index] + '\t')
                         w.write(mother_zygosity[index] + '\t')
                         w.write(father_zygosity[index] + '\n')
 
