@@ -125,7 +125,7 @@ def main():
 				if vcf in gene_lists:
 					os.system('mv %s %s/snp/%s/%s' % (vcf, family_id, directories[4], 'gene_lists'))
 				else:
-					os.system('mv %s %s/snp/%s/%s' % (vcf, family_id, directories[4]), 'lineage_files')
+					os.system('mv %s %s/snp/%s/%s' % (vcf, family_id, directories[4], 'lineage_files')
 					
 
 			elif 'indel' in vcf:
