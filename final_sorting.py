@@ -29,11 +29,6 @@ def read_data(filename):
 
 def main():
 
-	if len(sys.argv) != 2:
-		print "Please call script: {0} <key file>".format(sys.argv[0])
-
-	key_file = sys.argv[1]
-	key_data = read_data(key_file)
 
 	all_files = glob.glob('*')
 
@@ -46,7 +41,7 @@ def main():
 	gsearch_files = glob.glob('*_shared.vcf')
 	merge_files = glob.glob('*_merged.vcf')
 	match_coordinates = glob.glob('*_match_coordinates.txt')
-	gsearch_merge_files = gsearch_files + merge_files + match_coordinates
+	compare_merge_files = gsearch_files + merge_files + match_coordinates
 	
 
 	#output from VEP calling script
@@ -64,11 +59,12 @@ def main():
 	gene_lists = glob.glob('*_genelist*.txt')
 	lineage_files = glob.glob('*lineage*.txt')
 	unique_vcfs = glob.glob('*_unique_sorted.vcf')
+	full_gene_lists = glob.glob('*_full_monoallelic*.txt)
 	variant_comparison_files = gene_lists + lineage_files + unique_vcfs
 
 	#this creates a unique set of all of the family IDs
 	family_ids = []
-	for file_name in key_data:
+	for file_name in all_files:
 		if file_name[0] not in family_ids:
 			family_ids.append(file_name[0])
 		else:
@@ -81,7 +77,7 @@ def main():
 	original_files = RNA_original_files + WES_original_files + scripts
 
 
-	if len(all_files) != 2 + len(unprocessed_indels) + len(processed_files) + len(gsearch_merge_files) + len(annotated_files) + len(binning_files) + len(variant_comparison_files) + len(original_files):
+	if len(all_files) != 2 + len(unprocessed_indels) + len(processed_files) + len(compare_merge_files) + len(annotated_files) + len(binning_files) + len(variant_comparison_files) + len(original_files):
 		print 'Script does not account for all file types'
 		sys.exit(1)
 	else:
@@ -89,7 +85,7 @@ def main():
 
 	os.system('mkdir original_files_and_scripts')
 
-	directories = ['processed_files', 'gsearch_merge_files', 'binning_files', 'annotated_files', 'variant_comparison_files']
+	directories = ['processed_files', 'compare_merge_files', 'binned_files', 'annotated_files', 'variant_comparison_files']
 
 	#initializes all needed directories
 	for family_id in family_ids:
@@ -113,7 +109,7 @@ def main():
 			if vcf in processed_files:
 				os.system('mv %s %s/snp/%s' % (vcf, family_id, directories[0]))
 
-			elif vcf in gsearch_merge_files:
+			elif vcf in compare_merge_files:
 				os.system('mv %s %s/snp/%s' % (vcf, family_id, directories[1]))
 
 			elif vcf in binning_files:
