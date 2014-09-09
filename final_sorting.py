@@ -63,7 +63,8 @@ def main():
 	#all outputs from variant compare script
 	gene_lists = glob.glob('*_genelist*.txt')
 	lineage_files = glob.glob('*lineage*.txt')
-	variant_comparison_files = gene_lists + lineage_files
+	unique_vcfs = glob.glob('*_unique_sorted.vcf')
+	variant_comparison_files = gene_lists + lineage_files + unique_vcfs
 
 	#this creates a unique set of all of the family IDs
 	family_ids = []
@@ -97,7 +98,7 @@ def main():
 		for directory in directories:
 			os.system('mkdir %s/snp/%s' % (family_id, directory))
 			if directory == "variant_comparison_files":
-				os.system('mkdir %s/snp/%s/gene_lists; mkdir %s/snp/%s/lineage_files' % (family_id, directory, family_id, directory))
+				os.system('mkdir %s/snp/%s/gene_lists; mkdir %s/snp/%s/lineage_files; mkdir %s/snp/%s/unique_vcfs' % (family_id, directory, family_id, directory, family_id, directory))
 		os.system('mkdir %s/indel' % family_id)
 
 	#moves original data files to original folder
@@ -124,10 +125,10 @@ def main():
 			elif vcf in variant_comparison_files:
 				if vcf in gene_lists:
 					os.system('mv %s %s/snp/%s/%s' % (vcf, family_id, directories[4], 'gene_lists'))
-				else:
+				elif vcf in lineage_files:
 					os.system('mv %s %s/snp/%s/%s' % (vcf, family_id, directories[4], 'lineage_files'))
-					
-
+				else:
+					os.system('mv %s %s/snp/%s/%s' % (vcf, family_id, directories[4], 'unique_vcfs'))
 			elif 'indel' in vcf:
 				os.system('mv %s %s/indel' % (vcf, family_id))
 		
