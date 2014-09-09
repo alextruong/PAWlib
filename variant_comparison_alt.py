@@ -107,7 +107,7 @@ def unique_and_common_monoallelic_genes(proband_monoallelic_genes, proband_varia
 def trace_lineage(unique_variants_dict, reference_WES):
         """same function as gsearch compare merge"""
 
-        positions = [single_key for key in query_variants_dict for single_key in query_variants_dict[key]]
+        positions = [single_key for key in unique_variants_dict for single_key in unique_variants_dict[key]]
         query_key = [tuple((position.split(':')[0], position.split(':')[1])) for position in positions]
 
         lreference_WES = list(reference_WES)
