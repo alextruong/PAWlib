@@ -28,7 +28,11 @@ def read_data(filename):
 
 
 def main():
+	if len(sys.argv) != 2:
+		print "Please call script: {0} <key file>".format(sys.argv[0])
 
+	key_file = sys.argv[1]
+	key_data = read_data(key_file)
 
 	all_files = glob.glob('*')
 
