@@ -4,6 +4,7 @@
 from __future__ import division
 import os
 import sys
+import commands
 import glob
 
 
@@ -59,8 +60,6 @@ def create_gene_variant_dictionary(annotated_file, filename):
 
         return gene_var_dict
 
-
-
 def unique_and_common_monoallelic_genes(proband_monoallelic_genes, proband_variant_dict, proband_file_name, sibling_monoallelic_genes, sibling_variant_dict, sibling_file_name):
 
         proband_unique_monoallelic_genes = [unique_gene for unique_gene in proband_monoallelic_genes if unique_gene not in sibling_monoallelic_genes]
@@ -104,6 +103,40 @@ def unique_and_common_monoallelic_genes(proband_monoallelic_genes, proband_varia
 
         return proband_unique_monoallelic_genes, proband_unique_dict, sibling_unique_monoallelic_genes, sibling_unique_dict
 
+def make_unique_monoallelic_vcf(monoallelic_file_data, monoallelic_file_headers, positions, monoallelic_file_name):
+        lreference_monoallelic_data = list(monoallelic_file_data)
+        reference_key = [tuple((i[0], i[1])) for i in lreference_monoallelic_data]
+
+        positions_key = [tuple((position.split(':')[0], position.split(':')[1])) for position in positions]
+
+        unique_monoallelic_rows = []
+        for position in positions_key:
+                if position in reference_key:
+                        reference_index = reference_key.index(position)
+                        unique_monoallelic_rows.append(lreference_monoallelic_data[reference_index])
+                else:
+                        continue
+
+        new_vcf = monoallelic_file_name[0:-4] + '_unique.vcf'
+        with open(new_vcf, 'w') as w:
+                for line in monoallelic_file_headers:
+                        w.write(line + '\n')
+
+               
+                for index, unique_row in enumerate(unique_monoallelic_rows):
+                        if index != len(unique_monoallelic_rows) - 1:
+                                for column_index, column in enumerate(unique_row):
+                                        if column_index != len(unique_row) - 1:
+                                                w.write(column + '\t')
+                                        else:
+                                                w.write(column + '\n')
+                        else:
+                                for column_index, column in enumerate(unique_row):
+                                        if column_index != len(unique_row) - 1:
+                                                w.write(column + '\t')
+                                        else:
+                                                w.write(column)   
+                         
 
 def trace_lineage(unique_variants_dict, reference_WES):
         """same function as gsearch compare merge"""
@@ -199,17 +232,34 @@ def main():
                         individual = monoallelic_file.split('-')[0][-2:]
                         
                         if individual == 'p1':
+                                monoallelic_file_headers, monoallelic_file_data = read_data(monoallelic_file)
                                 mother_zygosity, positions = trace_lineage(proband_unique_dict, mother_WES_data)
                                 father_zygosity, positions = trace_lineage(proband_unique_dict, father_WES_data)
                                 write_lineage_files(individual, positions, mother_zygosity, father_zygosity, monoallelic_file)
+                                make_unique_monoallelic_vcf(monoallelic_file_data, monoallelic_file_headers, positions, monoallelic_file)
 
                         elif individual == 's1':
+                                monoallelic_file_headers, monoallelic_file_data = read_data(monoallelic_file)
                                 mother_zygosity, positions = trace_lineage(sibling_unique_dict, mother_WES_data)
                                 father_zygosity, positions = trace_lineage(sibling_unique_dict, father_WES_data)
                                 write_lineage_files(individual, positions, mother_zygosity, father_zygosity, monoallelic_file)
+                                make_unique_monoallelic_vcf(monoallelic_file_data, monoallelic_file_headers, positions, monoallelic_file)
                        
                         else:
                                 continue
+
+
+                unique_vcfs = glob.glob('*_unique.vcf')
+
+                sort = 'vcf-sort %s > %s'
+        
+                for vcf in unique_vcfs:
+                        new_name = str(vcf[0:-4]) + '_unique_sorted.vcf' 
+                        os.system(sort % (vcf, new_name))
+                
+                for vcf in unique_vcfs:
+                        os.system('rm %s' % vcf)
+
 
 if __name__ == "__main__":
         main()
