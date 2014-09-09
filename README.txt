@@ -113,7 +113,7 @@ After VEPcaller.py (16):
 After variant_comparison.py (9):
 1x <familyid>_common_p1_s1_monoallelic_genelist_variants.txt
 2x <familyid>_<p1|s1>-<m|f>_RNA_WES_snp_shared_sorted_merged_RNA-hom_WES-het_annotated_unique_monoallelic_genelist_variants.txt
-2x <familyid>_<mo|fa>-<m|f>_RNA_WES_snp_shared_sorted_merged_RNA-hom_WES-het_annotated_full_monoallelic_genelist.txt
+2x <familyid>_<mo|fa>-<m|f>_RNA_WES_snp_shared_sorted_merged_RNA-hom_WES-het_annotated_full_monoallelic_genelist_variants.txt
 2x <familyid>_<p1|s1>-<m|f>_RNA_WES_snp_shared_sorted_merged_RNA-hom_WES-het_unique_lineage_parent_WES.txt
 2x <familyid>_<p1|s1>-<m|f>_RNA_WES_snp_shared_sorted_merged_RNA-hom_WES-het_unique_sorted.vcf
 
