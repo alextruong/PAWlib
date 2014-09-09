@@ -177,7 +177,7 @@ def write_lineage_files(unique_dict, individual, positions, mother_zygosity, fat
                         w.write(father_zygosity[index] + '\n')
 
 def write_gene_dict(gene_var_dict, filename):
-        new_gene_var_file = filename[0:-4] + '_full_monoallelic_genes_variants.txt'
+        new_gene_var_file = filename[0:-4] + '_full_monoallelic_genelist_variants.txt'
         
         with open(new_gene_var_file, 'w') as w:
                 w.write('#gene\t' + 'variants\n')
