@@ -92,7 +92,7 @@ def unique_and_common_monoallelic_genes(proband_monoallelic_genes, proband_varia
                         w.write(unique_gene + '\t' + variants + '\n')
         
 
-        with open(common_variants_name, 'w') as w:
+        with open(common_file_name, 'w') as w:
                 headers = ['Gene', 'p1 variants', 's1 variants']
                 w.writelines('\t'.join(headers))
                 w.write('\n')
