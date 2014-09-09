@@ -173,12 +173,18 @@ def write_lineage_files(individual, positions, mother_zygosity, father_zygosity,
                         w.write(mother_zygosity[index] + '\t')
                         w.write(father_zygosity[index] + '\n')
 
-def write_gene_list(gene_file_name, gene_list):
-        monoallelic_file = gene_file_name[0:-4] + '_full_monoallelic_genelist.txt'
-
-        with open(monoallelic_file, 'w') as w:
-                for monoallelic_gene in gene_list:
-                        w.write(monoallelic_gene + '\n')
+def write_gene_dict(gene_var_dict, filename):
+        new_gene_var_file = filename[0:-4] + '_full_monoallelic_genes_variants.txt'
+        
+        with open(new_gene_var_file, 'w') as w:
+                w.write('#gene\t' + 'variants\n'
+                
+                for index, key in enumerate(gene_var_dict):
+                        positions = ','.join(gene_var_dict[key])
+                        if index != len(gene_var_dict) - 1:
+                                w.write(key + '\t' + positions + '\n')
+                        else:
+                                w.write(key + '\t' + positions)
 
 def main():
         
@@ -214,9 +220,9 @@ def main():
 
                         else:
                                 headers, data = read_data(monoallelic_annotated_file)
-                                monoallelic_genes = create_gene_list(data)
-                                write_gene_list(monoallelic_annotated_file, monoallelic_genes)
-
+                                gene_var_dict = create_gene_variant_dictionary(data, monoallelic_annotated_file)
+                                write_gene_dict(gene_var_dict, monoallelic_annotated_file)
+                                
                 proband_unique_monoallelic_genes, proband_unique_dict, sibling_unique_monoallelic_genes, sibling_unique_dict = unique_and_common_monoallelic_genes(proband_monoallelic_genes, proband_monoallelic_genes_variants, proband_file_name, sibling_monoallelic_genes, sibling_monoallelic_genes_variants, sibling_file_name)
 
 
