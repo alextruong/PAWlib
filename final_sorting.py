@@ -62,7 +62,7 @@ def main():
 
 	#all outputs from variant compare script
 	gene_lists = glob.glob('*_genelist*.txt')
-	lineage_files = glob.glob('*_traced_WES.txt')
+	lineage_files = glob.glob('*lineage*.txt')
 	variant_comparison_files = gene_lists + lineage_files
 
 	#this creates a unique set of all of the family IDs
