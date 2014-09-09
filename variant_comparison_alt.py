@@ -254,7 +254,7 @@ def main():
                 sort = 'vcf-sort %s > %s'
         
                 for vcf in unique_vcfs:
-                        new_name = str(vcf[0:-4]) + '_unique_sorted.vcf' 
+                        new_name = str(vcf[0:-4]) + '_sorted.vcf' 
                         os.system(sort % (vcf, new_name))
                 
                 for vcf in unique_vcfs:
