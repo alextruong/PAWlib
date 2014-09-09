@@ -61,12 +61,9 @@ def main():
 	binning_files = monoallelic_files + other_mismatch + matching_het + matching_hom + matrix_counts
 
 	#all outputs from variant compare script
-	monoallelic_common = glob.glob('*_monoallelic_common*.vcf')
-	monoallelic_unique = glob.glob('*_monoallelic_unique*.vcf')
-	gene_lists = glob.glob('*_genelist.txt')
-	gene_dictionaries = glob.glob('*_gene_dictionary.txt')
+	gene_lists = glob.glob('*_genelist*.txt')
 	lineage_files = glob.glob('*_traced_WES.txt')
-	variant_comparison_files = monoallelic_common + monoallelic_unique + gene_lists + gene_dictionaries + lineage_files
+	variant_comparison_files = gene_lists + lineage_files
 
 	#this creates a unique set of all of the family IDs
 	family_ids = []
@@ -99,6 +96,8 @@ def main():
 		os.system('mkdir %s/snp' % family_id)
 		for directory in directories:
 			os.system('mkdir %s/snp/%s' % (family_id, directory))
+			if directory == "variant_comparison_files":
+				os.system('mkdir %s/snp/%s/gene_lists; mkdir %s/snp/%s/lineage_files' % (family_id, directory, family_id, directory))
 		os.system('mkdir %s/indel' % family_id)
 
 	#moves original data files to original folder
@@ -123,7 +122,11 @@ def main():
 				os.system('mv %s %s/snp/%s' % (vcf, family_id, directories[3]))
 
 			elif vcf in variant_comparison_files:
-				os.system('mv %s %s/snp/%s' % (vcf, family_id, directories[4]))
+				if vcf in gene_lists:
+					os.system('mv %s %s/snp/%s/%s' % (vcf, family_id, directories[4], 'gene_lists'))
+				else:
+					os.system('mv %s %s/snp/%s/%s' % (vcf, family_id, directories[4]), 'lineage_files')
+					
 
 			elif 'indel' in vcf:
 				os.system('mv %s %s/indel' % (vcf, family_id))
