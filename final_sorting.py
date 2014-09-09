@@ -59,7 +59,6 @@ def main():
 	gene_lists = glob.glob('*_genelist*.txt')
 	lineage_files = glob.glob('*lineage*.txt')
 	unique_vcfs = glob.glob('*_unique_sorted.vcf')
-	full_gene_lists = glob.glob('*_full_monoallelic*.txt)
 	variant_comparison_files = gene_lists + lineage_files + unique_vcfs
 
 	#this creates a unique set of all of the family IDs
