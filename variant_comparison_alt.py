@@ -68,8 +68,8 @@ def unique_and_common_monoallelic_genes(proband_monoallelic_genes, proband_varia
 
         proband_unique_dict = {key:value for key, value in proband_variant_dict.iteritems() if key in proband_unique_monoallelic_genes}
         sibling_unique_dict = {key:value for key, value in sibling_variant_dict.iteritems() if key in sibling_unique_monoallelic_genes}
-        #proband_unique_dict = dict((k, v) for (k, v) in proband_variant_dict.iteritems() if key in proband_unique_monoallelic_genes)
-        #sibling_unique_dict = dict((k, v) for (k, v) in sibling_variant_dict.iteritems() if key in sibling_unique_monoallelic_genes)
+        #proband_unique_dict = dict((k, v) for (k, v) in proband_variant_dict.iteritems() if k in proband_unique_monoallelic_genes)
+        #sibling_unique_dict = dict((k, v) for (k, v) in sibling_variant_dict.iteritems() if k in sibling_unique_monoallelic_genes)
         
         common_genes = set(proband_monoallelic_genes).intersection(sibling_monoallelic_genes)
 
