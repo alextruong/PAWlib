@@ -103,7 +103,7 @@ def main():
 
 	#moves original data files to original folder
 	for vcf in all_files:
-		if vcf in original_files or (vcf == 'sampleKey_truncated.txt') or (vcf == "README.txt"):
+		if vcf in original_files or (vcf == sys.argv[1]) or (vcf == "README.txt"):
 			os.system('mv %s %s/' % (vcf, 'original_files_and_scripts'))
 
 	#moves files into directories by what script produced them
