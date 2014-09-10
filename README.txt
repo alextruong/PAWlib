@@ -120,7 +120,7 @@ After variant_comparison.py (9):
 2x <familyid>_<p1|s1>-<m|f>_RNA_WES_snp_shared_sorted_merged_RNA-hom_WES-het_unique_lineage_parent_WES.txt
 2x <familyid>_<p1|s1>-<m|f>_RNA_WES_snp_shared_sorted_merged_RNA-hom_WES-het_unique_sorted.vcf
 
-TOTAL: 66 output files per family
+TOTAL: 74 output files per family
 
 
 -------------------------------------------------------------------------------
