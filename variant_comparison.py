@@ -154,7 +154,7 @@ def trace_lineage(unique_variants_dict, reference_WES):
                         zygosity.append(lreference_WES[reference_index][-1].split(':')[0])
 
                 else:
-                        zygosity.append('N/A')                                  
+                        zygosity.append('-')                                  
 
         return zygosity, positions
 
