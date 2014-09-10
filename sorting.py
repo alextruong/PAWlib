@@ -42,14 +42,15 @@ def main():
 	unprocessed_indels = glob.glob('*_indel.vcf')
 
 	#outputs from gsearch and merge script
-	gsearch_files = glob.glob('*_shared.vcf')
 	merge_files = glob.glob('*_merged.vcf')
 	match_coordinates = glob.glob('*_match_coordinates.txt')
-	compare_merge_files = gsearch_files + merge_files + match_coordinates
+	compare_merge_files = merge_files + match_coordinates
 	
 
 	#output from VEP calling script
-	annotated_files = glob.glob('*_annotated.vcf*')
+	annotated_files = glob.glob('*_annotated.vcf')
+	annotated_html = glob.glob('*.html')
+	VEP_calling_files = annotated_files + annotated_html
 
 	#all outputs from binning script
 	monoallelic_files = glob.glob('*_RNA-hom_WES-het.vcf')
@@ -67,20 +68,20 @@ def main():
 
 	#this creates a unique set of all of the family IDs
 	family_ids = []
-	for file_name in all_files:
-		if file_name[0] not in family_ids:
-			family_ids.append(file_name[0])
+	for family_id in key_data:
+		if family_id[0] not in family_ids:
+			family_ids.append(family_id[0])
 		else:
 			continue
 
 	#this grabs the original files, and the scripts
 	scripts = [files for files in all_files if files.endswith('.py')]
-	RNA_original_files = [i[2].strip() for i in key_data]
-	WES_original_files = [i[3].strip() for i in key_data]
+	RNA_original_files = [i[2].strip() for i in key_data if i in all_files]
+	WES_original_files = [i[3].strip() for i in key_data if i in all_files]
 	original_files = RNA_original_files + WES_original_files + scripts
 
-
-	if len(all_files) != 2 + len(unprocessed_indels) + len(processed_files) + len(compare_merge_files) + len(annotated_files) + len(binning_files) + len(variant_comparison_files) + len(original_files):
+	
+	if len(all_files) != 2 + len(unprocessed_indels) + len(processed_files) + len(compare_merge_files) + len(VEP_calling_files) + len(binning_files) + len(variant_comparison_files) + len(original_files):
 		print 'Script does not account for all file types'
 		sys.exit(1)
 	else:
@@ -118,7 +119,7 @@ def main():
 			elif vcf in binning_files:
 				os.system('mv %s %s/snp/%s' % (vcf, family_id, directories[2]))
 
-			elif vcf in annotated_files:
+			elif vcf in VEP_calling_files:
 				os.system('mv %s %s/snp/%s' % (vcf, family_id, directories[3]))
 
 			elif vcf in variant_comparison_files:
