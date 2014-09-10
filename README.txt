@@ -53,6 +53,9 @@ These scripts were developed in a Python 2.x environment; no testing for compati
 ***
 
 IN ORDER, EXECUTE AS FOLLOWS (or similarly depending on environment):
+
+Move all necessary files, scripts included here, and key file to the same directory. There is no need to cleanup files between steps as the sorting script will organize files by output during the final step. The scripts can be shell-scripted to run in series.
+
 1) VCF_processing.py
 
 python VCF_processing.py <keyfile.txt>
