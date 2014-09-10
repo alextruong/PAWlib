@@ -85,7 +85,7 @@ def main():
 		print 'Script does not account for all file types'
 		sys.exit(1)
 	else:
-		print 'Initalizing directories and moving files'
+		print 'Initializing directories and moving files'
 
 	os.system('mkdir original_files_and_scripts')
 
