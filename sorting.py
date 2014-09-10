@@ -76,8 +76,8 @@ def main():
 
 	#this grabs the original files, and the scripts
 	scripts = [files for files in all_files if files.endswith('.py')]
-	RNA_original_files = [i[2].strip() for i in key_data if i in all_files]
-	WES_original_files = [i[3].strip() for i in key_data if i in all_files]
+	RNA_original_files = [i[2].strip() for i in key_data if i[2] in all_files]
+	WES_original_files = [i[3].strip() for i in key_data if i[3] in all_files]
 	original_files = RNA_original_files + WES_original_files + scripts
 
 	
