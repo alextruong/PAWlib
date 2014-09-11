@@ -23,7 +23,7 @@ There are 6 scripts that do all the work in this pipeline. In order, they are:
 Due to the variable nature of the input data, we request that all input files
 be associated with a tab-delimited text file of the format
 
-#FAMILYID ID  RNAFILENAME WESFILENAME GENDER
+#FAMILYID         ID        RNAFILENAME   WESFILENAME GENDER
 <familyid>  <p1|s1|mo|fa> <RNA-seq file>  <WES file>  <m|f>
 .
 .
