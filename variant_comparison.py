@@ -113,7 +113,10 @@ def make_unique_monoallelic_vcf(monoallelic_file_data, monoallelic_file_headers,
         for position in positions_key:
                 if position in reference_key:
                         reference_index = reference_key.index(position)
-                        unique_monoallelic_rows.append(lreference_monoallelic_data[reference_index])
+                        if lreference_monoallelic_dat[reference_index] in unique_monoallelic_rows:
+                                continue
+                        else:
+                                unique_monoallelic_rows.append(lreference_monoallelic_data[reference_index])
                 else:
                         continue
 
