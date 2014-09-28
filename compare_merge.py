@@ -38,22 +38,27 @@ def compare(ref_data, query_data, file_name):
         lquery_data = query_data
         lref_data = ref_data
 
+        #makes an array of all the alternate alleles from the reference and query data
         ref_alt_key = [i[4] for i in lref_data]
         query_alt_key = [i[4] for i in lquery_data]
 
+        #makes an array of Chr#, position, and refrence allele for both reference and query data
         ref_data_key = [tuple((i[0], i[1], i[3])) for i in lref_data]
         query_data_key = [tuple((i[0], i[1], i[3])) for i in lquery_data]
 
+        #find the set intersection of the reference and query data key
         common = set(ref_data_key).intersection( set(query_data_key) )
 
+        #goes through each common variant
         for i in common:
                 ref_index = ref_data_key.index(i)
                 query_index = query_data_key.index(i)
 
+                #for the common variants, if the alt matches exactly, append each to a list
                 if query_alt_key[query_index] == ref_alt_key[ref_index]:
                         query_out_data.append(query_data[query_index])
                         ref_out_data.append(ref_data[ref_index])
-
+                #if no exact match, split on the comma, and check if any of the alleles match between ref and alt
                 else:
                         query_temp = query_alt_key[query_index].split(',')
                         ref_temp = ref_alt_key[ref_index].split(',')
@@ -68,6 +73,8 @@ def compare(ref_data, query_data, file_name):
 
 def write_to_file(ref_file, query_file, ref_headers, query_headers, query_out_data, ref_out_data, multiallelic_locations):
         """standard write to file, no trailing tabs, could be done with writelines and join"""
+        
+        #appends shared.vcf to the end of each file
         new_ref_file = ref_file[0:-4] + '_shared.vcf'
         new_query_file = query_file[0:-4] + '_shared.vcf'
 
@@ -97,6 +104,7 @@ def write_to_file(ref_file, query_file, ref_headers, query_headers, query_out_da
         hold = new_ref_file.split('_')[0:2]
         wobblefile = hold[0] + '_' + hold[1]
 
+        #prints the variant information for the multiallelic sites for reference
         with open('%s_incomplete_match_coordinates.txt' % wobblefile, 'w') as w:
                 for line in multiallelic_locations:
                         w.write(str(line) + '\n')
@@ -104,6 +112,7 @@ def write_to_file(ref_file, query_file, ref_headers, query_headers, query_out_da
 
 def findbcf():
 
+        #this function finds the bcftools executable
         print 'Locating bcftools installation...'
 
         find_bcftools_path = commands.getstatusoutput('find ~/ -name bcftools -executable -type f -print 2>/dev/null')
@@ -130,6 +139,7 @@ def bcfmerge(rna, wes, bcfdir):
 
         sortcommand = 'vcf-sort %s > %s; vcf-sort %s > %s' % (rna, rnatemp, wes, westemp)
         
+        #sorts the vcf, bgzips it, and then tabixes it
         os.system(sortcommand)
 
         #print 'bgzipping gsearch output files...'
@@ -155,12 +165,16 @@ def bcfmerge(rna, wes, bcfdir):
 
 def main():
 
+        #all o fthe RNA and WES files
         RNA_files = glob.glob('*_RNA_snp.vcf')
         WES_files = glob.glob('*_WES_snp.vcf')
 
+        #simple check to see that there are an equal number of RNA and WES files, this can be commented out
         if len(RNA_files) != len(WES_files):
                 print 'Missing files'
                 sys.exit(1)
+        
+        #simple command line progress tracker
         counter = 0
         print 'Processing file comparisons...'
         sys.stdout.write('Progress: 0% \r')
@@ -190,6 +204,8 @@ def main():
         print '----------------------------------------------------'
 
         bcfdir = findbcf()
+        
+        #takes the two half files and uses bcftools to merge
 
         rnapool = glob.glob('*_RNA_snp_shared.vcf')
         wespool = glob.glob('*_WES_snp_shared.vcf')
