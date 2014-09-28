@@ -21,7 +21,7 @@ def read_data(filename):
                         else:
                                 data.append(line.strip())
         
-                                
+        #This line makes data a list of lists for simpler indexing    
         data = [line.split('\t') for line in data]
 
 
@@ -39,13 +39,16 @@ def filter_qual_WES(data, input_qual, input_het, input_hom):
         qual_gq_filtered_WES_rows = []
         
         for i in data:
+                #skips truncated lines
                 if i[0].startswith('GL'):
                         continue
+                #the -1 index is always the last element of a python list
                 else:
                         gq_score.append(i[-1].split(':')[-2])
                         qual_score.append(i[5])
                         genotype.append(i[-1].split(':')[0])
-       
+        
+        #This for loop goes through each set of data, and ensures that the quality/gq scores meet a certain threshold
         for i in xrange(len(gq_score)):
                 if genotype[i] in ['0/1', '1/0'] and float(qual_score[i]) >= input_qual:
                         if int(gq_score[i]) >= input_het:
@@ -59,7 +62,7 @@ def filter_qual_WES(data, input_qual, input_het, input_hom):
         
 def filter_qual_RNA(data, input_qual, input_het, input_hom):
         """reads in gt_pl_gq, and qual_score, returns rows with qual_score >= 20 and gq >= 20 (het), gq >= 40 (hom) or values defined by user"""
-
+        #the split indexes are slightly different due to the vcf format
         gq_score = [i[-1].split(':')[-1] for i in data]
 
         genotype = [i[-1].split(':')[0] for i in data]
@@ -88,16 +91,16 @@ def filter_snp_indel(qual_gq_filtered_rows):
         length = []
         snps = []
         indels = []
-
+        #loops through all of the rows with sufficient quality
         for i in xrange(len(qual_gq_filtered_rows)):
                 temp = qual_gq_filtered_rows[i][4].split(',')
 
                 for j in xrange(len(temp)):
                         length.append(len(temp[j]))
-
+                #if all of the alt alleles have length 1, and the ref allele is length 1, append to snps
                 if all(i == 1 for i in length) and len(qual_gq_filtered_rows[i][3]) == 1:
                         snps.append(qual_gq_filtered_rows[i])
-
+                #otherwise, we consider it an indel
                 else:
                         indels.append(qual_gq_filtered_rows[i])
 
@@ -109,7 +112,7 @@ def filter_snp_indel(qual_gq_filtered_rows):
 
 def write_processed_variants(file_name, snps, indels, headers, key_data):
         """defines naming schemes for snps/indels, then writes to file with original vcf format"""
-        
+        #creates the new naming scheme from the key file
         for i in key_data:      
                 if i[3] == file_name:
                         snp_name = str(i[0]) + '_' + str(i[1]) + '-' + str(i[-1]) + '_WES' + '_snp.vcf'
@@ -119,7 +122,7 @@ def write_processed_variants(file_name, snps, indels, headers, key_data):
                         indel_name = str(i[0]) + '_' + str(i[1]) + '-' + i[-1] + '_RNA' + '_indel.vcf'
                 else:
                         'File not present in key'
-
+        #standard write functions
         with open(snp_name, 'w') as w:
                 for line in headers:
                         w.write(line + '\n')
@@ -178,10 +181,11 @@ def main():
                 sys.exit(1)
         
                 
-        
+        #key data read in
         key_file = sys.argv[1]
         key_headers, key_data = read_data(key_file)
 
+        #list of RNA and WES files, change the indices if you change the position in the key file
         WES_files = [i[3] for i in key_data]
         RNA_files = [i[2] for i in key_data]
         all_vcf_files = WES_files + RNA_files
