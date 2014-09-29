@@ -26,6 +26,7 @@ def read_data(filename):
         
 def parse_combinations(data, file_name):
 
+        #initializes counts
         matching_het_count = 0
         matching_hom_count = 0
         rna_hom_wes_het_count = 0
@@ -35,11 +36,13 @@ def parse_combinations(data, file_name):
         file_name = []
         master_file = []
         
+        #initializes arrays
         monoallelic_variants = []
         other_mismatch = []
         matching_het = []
         matching_hom = []
 
+        #for each element in the data, check what pattern of zygosity each variant displays and bin it into the appropriate group
         for i in xrange(len(data)):
                 wes_genotype = data[i][-1].split(':')[0]
                 rna_genotype = data[i][-2].split(':')[0]
@@ -59,7 +62,7 @@ def parse_combinations(data, file_name):
                 elif (wes_genotype != rna_genotype) and (wes_genotype == '0/1' and rna_genotype == '1/1'):
                         rna_hom_wes_het_count += 1
                         monoallelic_variants.append(data[i])
-                
+                #this assumes 0/1, 1/1 are the only combinations, remove the next three lines if the data has diff. zygosities
                 else:
                         print 'Parsing failed, columns in wrong position'
                         sys.exit(1)
@@ -79,6 +82,7 @@ def write_to_file(master_file, family_number):
         file_name = family_number
         print 'Writing File...'
         
+        #writes the counts from each individual
         with open('%s_RNA_WES_cross_pairwise_matrix_counts.txt' % file_name, 'w') as w:
                 w.write('\t')
                 for x in xrange(len(master_file)):
@@ -179,6 +183,7 @@ def main():
         
         master_file = []
         
+        #loops through on a family level, concatenates the information from each individual into the count file
         for family_id in family_list:
                 family_files = glob.glob("%s*_merged.vcf" % family_id)
 
