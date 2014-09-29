@@ -31,9 +31,11 @@ def main():
 	if len(sys.argv) != 2:
 		print "Please call script: {0} <key file>".format(sys.argv[0])
 
+	#reads in information from the key file
 	key_file = sys.argv[1]
 	key_data = read_data(key_file)
 
+	#this takes the name of all files in the current directory
 	all_files = glob.glob('*')
 
 
@@ -80,13 +82,15 @@ def main():
 	WES_original_files = [i[3].strip() for i in key_data if i[3] in all_files]
 	original_files = RNA_original_files + WES_original_files + scripts
 
-	
+	#the length of the individual globs should be equal to the total, the 2 accounts for the key file and readme.txt
+	#breaks if the lengths aren't the same to ensure the scripts ran properly
 	if len(all_files) != 2 + len(unprocessed_indels) + len(processed_files) + len(compare_merge_files) + len(VEP_calling_files) + len(binning_files) + len(variant_comparison_files) + len(original_files):
 		print 'Script does not account for all file types'
 		sys.exit(1)
 	else:
 		print 'Initializing directories and moving files'
-
+	
+	#initializes the original files directory
 	os.system('mkdir original_files_and_scripts')
 
 	directories = ['processed_files', 'compare_merge_files', 'binned_files', 'annotated_files', 'variant_comparison_files']
