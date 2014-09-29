@@ -32,6 +32,7 @@ def read_data(filename):
 def create_gene_list(annotated_query_file_data):
         """makes a gene list based on VEP annotation"""
 
+        #makes a list of unique genes found in a file, designed for VEP annotation, needs to be changed for other annotations
         monoallelic_genes = set([str(i[-1].split(';')[-1].split('=')[-1]) for i in annotated_query_file_data if i[-1].split(';')[-1].split('=')[0] == 'SYMBOL'])
 
         return monoallelic_genes
@@ -48,10 +49,12 @@ def create_gene_variant_dictionary(annotated_file, filename):
                         key = line[-1].split(';')[-1].split('=')[-1]
                         value = line[1]
         
+                        #if the gene is not in the dictionary, make it a key and its value an empty list
                         if key not in gene_var_dict:
                                 gene_var_dict[key] = []
                                 gene_var_dict[key].append(value)
-                
+                        
+                        #only appends unique positions to the dictionary
                         else:
                                 if value not in gene_var_dict[key]:
                                         gene_var_dict[key].append(value)
@@ -61,17 +64,21 @@ def create_gene_variant_dictionary(annotated_file, filename):
         return gene_var_dict
 
 def unique_and_common_monoallelic_genes(proband_monoallelic_genes, proband_variant_dict, proband_file_name, sibling_monoallelic_genes, sibling_variant_dict, sibling_file_name):
-
+        #makes unique gene lists for proband and sibling
         proband_unique_monoallelic_genes = [unique_gene for unique_gene in proband_monoallelic_genes if unique_gene not in sibling_monoallelic_genes]
         sibling_unique_monoallelic_genes = [unique_gene for unique_gene in sibling_monoallelic_genes if unique_gene not in proband_monoallelic_genes]
 
+        #dict comprehensions were added in 2.7, use the generator expression for 2.6 and below
+        
         #proband_unique_dict = {key:value for key, value in proband_variant_dict.iteritems() if key in proband_unique_monoallelic_genes}
         #sibling_unique_dict = {key:value for key, value in sibling_variant_dict.iteritems() if key in sibling_unique_monoallelic_genes}
         proband_unique_dict = dict((k, v) for (k, v) in proband_variant_dict.iteritems() if k in proband_unique_monoallelic_genes)
         sibling_unique_dict = dict((k, v) for (k, v) in sibling_variant_dict.iteritems() if k in sibling_unique_monoallelic_genes)
         
+        #finds the common genes
         common_genes = set(proband_monoallelic_genes).intersection(sibling_monoallelic_genes)
 
+        #names the output files
         proband_unique_name = proband_file_name[0:-4] + '_unique_monoallelic_genelist_variants.txt'
         sibling_unique_name = sibling_file_name[0:-4] + '_unique_monoallelic_genelist_variants.txt'
         common_file_name = proband_file_name.split('_')[0] + '_common_p1_s1_monoallelic_genelist_variants.txt'
@@ -104,11 +111,14 @@ def unique_and_common_monoallelic_genes(proband_monoallelic_genes, proband_varia
         return proband_unique_monoallelic_genes, proband_unique_dict, sibling_unique_monoallelic_genes, sibling_unique_dict
 
 def make_unique_monoallelic_vcf(monoallelic_file_data, monoallelic_file_headers, positions, monoallelic_file_name):
+        
+        #matches chr num and position to create vcf file of monoallelic variants
         lreference_monoallelic_data = list(monoallelic_file_data)
         reference_key = [tuple((i[0], i[1])) for i in lreference_monoallelic_data]
 
         positions_key = [tuple((position.split(':')[0], position.split(':')[1])) for position in positions]
         
+        #appends only monoallelic variant information from original vcf to an array
         unique_monoallelic_rows = []
         for position in positions_key:
                 if position in reference_key:
@@ -144,12 +154,14 @@ def make_unique_monoallelic_vcf(monoallelic_file_data, monoallelic_file_headers,
 def trace_lineage(unique_variants_dict, reference_WES):
         """same function as gsearch compare merge"""
 
+        #simply change the reference WES to father or mother, use this same function
         positions = [single_value for key in unique_variants_dict for single_value in unique_variants_dict[key]]
         query_key = [tuple((position.split(':')[0], position.split(':')[1])) for position in positions]
 
         lreference_WES = list(reference_WES)
         WES_variants_key = [tuple((i[0], i[1])) for i in lreference_WES]
 
+        #matches the position again, and takes the zygosity from the WES file, the index needs to change if the formatting is different
         zygosity = []
         for position in query_key:
                 if position in WES_variants_key:
@@ -165,6 +177,7 @@ def write_lineage_files(unique_dict, individual, positions, mother_zygosity, fat
         """writes out file with variant, and zygosity in mother and father"""
         header_lines = [('#' + individual) + ' genes', 'variant', 'mother zygosity', 'father zygosity']
 
+        #this writes out a file with the monoallelic variant, and its zygosity in mother and father for each query
         with open(filename[0:-4] + '_unique_lineage_parent_WES.txt', 'w') as w:
                 for header in header_lines:
                         w.write(header + '\t')
@@ -199,14 +212,18 @@ def main():
         family_list = set([i.split('_')[0] for i in file_names])
         
         master_file = []
-
+        
+        
+        #grabs the needed monoallelic and monoallelic annotated files
         all_monoallelic_files = glob.glob("*_RNA-hom_WES-het.vcf")
         all_monoallelic_annotated_files = glob.glob("*_RNA-hom_WES-het_annotated.vcf")
         
+        #loops through on a family level
         for family_id in family_list:
                 
                 family_specific_monoallelic_annotated_files = [i for i in all_monoallelic_annotated_files if i.split('_')[0] == family_id]
 
+                #creates monoallelic gene lists/dictionaries for proband/sibling, and gene list for parents
                 for monoallelic_annotated_file in family_specific_monoallelic_annotated_files:
                         
                         individual = monoallelic_annotated_file.split('-')[0][-2:]
@@ -231,7 +248,7 @@ def main():
                                 
                 proband_unique_monoallelic_genes, proband_unique_dict, sibling_unique_monoallelic_genes, sibling_unique_dict = unique_and_common_monoallelic_genes(proband_monoallelic_genes, proband_monoallelic_genes_variants, proband_file_name, sibling_monoallelic_genes, sibling_monoallelic_genes_variants, sibling_file_name)
 
-
+                #grabs the files needed to trace lineage back to parent WES
                 family_specific_monoallelic_files = [i for i in all_monoallelic_files if i.split('_')[0] == family_id]
                 mother_WES = "%s_mo-f_WES_snp.vcf" % family_id
                 father_WES = "%s_fa-m_WES_snp.vcf" % family_id
@@ -243,6 +260,7 @@ def main():
                         
                         individual = monoallelic_file.split('-')[0][-2:]
                         
+                        #traces lineage for proband and sibling to parents, skips parent files 
                         if individual == 'p1':
                                 monoallelic_file_headers, monoallelic_file_data = read_data(monoallelic_file)
                                 mother_zygosity, positions = trace_lineage(proband_unique_dict, mother_WES_data)
@@ -260,7 +278,7 @@ def main():
                         else:
                                 continue
 
-
+                #sorts the newly made VCFs, removes the unsorted file
                 unique_vcfs = glob.glob('*_unique.vcf')
 
                 sort = 'vcf-sort %s > %s'
